@@ -1,0 +1,74 @@
+# Tesla Powerwall Materials
+# All body panels = PURE WHITE, side = dark gray, LED = green
+
+# wire_008008136 - Dark gray/black (side vents, trim)
+newmtl wire_008008136
+Kd 0.15 0.15 0.15
+Ka 0.02 0.02 0.02
+Ks 0.3 0.3 0.3
+Ns 100
+d 1.0
+illum 2
+
+# wire_028089177 - Dark gray (TESLA logo text)
+newmtl wire_028089177
+Kd 0.20 0.20 0.20
+Ka 0.03 0.03 0.03
+Ks 0.15 0.15 0.15
+Ns 60
+d 1.0
+illum 2
+
+# wire_138008110 - Black (buttons, ports)
+newmtl wire_138008110
+Kd 0.1 0.1 0.1
+Ka 0.01 0.01 0.01
+Ks 0.3 0.3 0.3
+Ns 100
+d 1.0
+illum 2
+
+# wire_154215229 - PURE WHITE (body panel)
+newmtl wire_154215229
+Kd 1.0 1.0 1.0
+Ka 0.3 0.3 0.3
+Ks 0.5 0.5 0.5
+Ns 150
+d 1.0
+illum 2
+
+# wire_177088027 - PURE WHITE (main body front panel)
+newmtl wire_177088027
+Kd 1.0 1.0 1.0
+Ka 0.3 0.3 0.3
+Ks 0.5 0.5 0.5
+Ns 150
+d 1.0
+illum 2
+
+# wire_198225087 - Bright green (LED strip)
+newmtl wire_198225087
+Kd 0.1 0.9 0.4
+Ka 0.05 0.5 0.2
+Ks 0.4 0.8 0.5
+Ns 180
+d 1.0
+illum 2
+
+# wire_213154229 - PURE WHITE (body panels)
+newmtl wire_213154229
+Kd 1.0 1.0 1.0
+Ka 0.3 0.3 0.3
+Ks 0.5 0.5 0.5
+Ns 150
+d 1.0
+illum 2
+
+# wire_228214153 - PURE WHITE (main front face)
+newmtl wire_228214153
+Kd 1.0 1.0 1.0
+Ka 0.3 0.3 0.3
+Ks 0.5 0.5 0.5
+Ns 150
+d 1.0
+illum 2
