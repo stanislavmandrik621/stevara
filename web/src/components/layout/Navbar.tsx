@@ -297,39 +297,68 @@ export function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            style={{ position: 'fixed', inset: 0, zIndex: 40, backgroundColor: 'var(--background)' }}
+            style={{ 
+              position: 'fixed', 
+              inset: 0, 
+              zIndex: 100, 
+              backgroundColor: 'var(--background)',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
           >
-            <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              style={{
-                position: 'absolute',
-                top: '28px',
-                right: '24px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '44px',
-                height: '44px',
-                borderRadius: '12px',
-                backgroundColor: 'var(--glass)',
-                border: '1px solid var(--glass-border)',
-                cursor: 'pointer',
-                color: 'var(--foreground)',
-              }}
-              aria-label="Close menu"
-            >
-              <X style={{ width: '20px', height: '20px' }} />
-            </button>
+            {/* Header with MENU label and close button */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '16px 24px',
+              borderBottom: '1px solid rgba(0,0,0,0.06)',
+            }}>
+              <span style={{
+                fontSize: '12px',
+                fontWeight: 600,
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                color: 'var(--foreground-muted)',
+              }}>
+                Меню
+              </span>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '10px',
+                  backgroundColor: 'rgba(0,0,0,0.04)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--foreground)',
+                }}
+                aria-label="Close menu"
+              >
+                <X style={{ width: '20px', height: '20px' }} />
+              </button>
+            </div>
 
-            <nav style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', padding: '0 32px' }}>
+            {/* Navigation links */}
+            <nav style={{ 
+              flex: 1,
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'center', 
+              padding: '0 24px',
+            }}>
               {navLinks.map((link, index) => {
                 const isDisabled = link.href !== "/";
                 return (
                   <motion.div
                     key={link.href}
-                    initial={{ opacity: 0, x: -40 }}
+                    initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ delay: index * 0.06, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   >
                     <Link
                       href={link.href}
@@ -342,14 +371,15 @@ export function Navbar() {
                       }}
                       style={{
                         display: 'block',
-                        padding: '12px 0',
-                        fontSize: '8vw',
+                        padding: '16px 0',
+                        fontSize: 'clamp(28px, 7vw, 40px)',
                         fontWeight: 600,
                         letterSpacing: '-0.02em',
                         textDecoration: 'none',
                         color: pathname === link.href ? 'var(--foreground)' : 'var(--foreground-muted)',
                         transition: 'color 0.3s ease',
                         cursor: 'default',
+                        borderBottom: '1px solid rgba(0,0,0,0.06)',
                       }}
                     >
                       {link.label}
@@ -357,35 +387,70 @@ export function Navbar() {
                   </motion.div>
                 );
               })}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                style={{ marginTop: '48px' }}
+            </nav>
+
+            {/* Bottom section with button and contacts */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              style={{ 
+                padding: '24px',
+                borderTop: '1px solid rgba(0,0,0,0.06)',
+              }}
+            >
+              <span
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '12px',
+                  width: '100%',
+                  padding: '18px 32px',
+                  backgroundColor: 'var(--foreground)',
+                  color: 'var(--background)',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  letterSpacing: '0.02em',
+                  textDecoration: 'none',
+                  borderRadius: '14px',
+                  cursor: 'default',
+                }}
               >
-                <span
+                Залишити запит
+                <ArrowRight style={{ width: '16px', height: '16px' }} />
+              </span>
+              
+              {/* Contacts */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginTop: '20px',
+                paddingTop: '20px',
+                borderTop: '1px solid rgba(0,0,0,0.06)',
+              }}>
+                <a 
+                  href="mailto:info@stevara.ua"
                   style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '16px 32px',
-                    backgroundColor: 'var(--foreground)',
-                    color: 'var(--background)',
                     fontSize: '14px',
-                    fontWeight: 600,
-                    letterSpacing: '0.05em',
-                    textTransform: 'uppercase',
+                    color: 'var(--foreground-muted)',
                     textDecoration: 'none',
-                    borderRadius: '100px',
-                    transition: 'all 0.3s ease',
-                    cursor: 'default',
                   }}
                 >
-                  Залишити запит
-                  <ArrowRight style={{ width: '16px', height: '16px' }} />
-                </span>
-              </motion.div>
-            </nav>
+                  info@stevara.ua
+                </a>
+                <a 
+                  href="tel:+380441234567"
+                  style={{
+                    fontSize: '14px',
+                    color: 'var(--foreground-muted)',
+                    textDecoration: 'none',
+                  }}
+                >
+                  +380 (44) 123-45-67
+                </a>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

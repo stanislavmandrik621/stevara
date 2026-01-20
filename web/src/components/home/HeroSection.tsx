@@ -425,14 +425,14 @@ export function HeroSection() {
               </defs>
               <text style={{ 
                 fill: 'var(--foreground)', 
-                fontSize: '11px', 
-                letterSpacing: '0.3em',
+                fontSize: '10px', 
+                letterSpacing: '0.2em',
                 textTransform: 'uppercase',
                 fontWeight: 500,
                 opacity: 0.5
               }}>
                 <textPath href="#scrollCirclePath">
-                  ГОРТАЙ  •  ГОРТАЙ  •  ГОРТАЙ  •
+                  ГОРТАЙ • ГОРТАЙ • ГОРТАЙ • ГОРТАЙ •
                 </textPath>
               </text>
             </svg>
