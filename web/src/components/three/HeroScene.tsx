@@ -165,8 +165,9 @@ export function HeroScene({ isMobile = false }: { isMobile?: boolean }) {
     <div style={{ position: 'absolute', inset: 0 }}>
       <Canvas
         camera={{ 
-          position: isMobile ? [2, 0.5, 8] : [0, 1.5, 12], 
-          fov: isMobile ? 45 : 40, 
+          // Mobile: lower camera Y to move objects UP, same angle otherwise
+          position: isMobile ? [0, -1, 7] : [0, 1.5, 12], 
+          fov: 40, 
           near: 0.1, 
           far: 100 
         }}
@@ -182,7 +183,7 @@ export function HeroScene({ isMobile = false }: { isMobile?: boolean }) {
         <Suspense fallback={null}>
           <SceneLighting isDark={isDark} />
 
-          {/* Products group - same layout, camera adjusted for mobile */}
+          {/* Products group - same layout for both */}
           <ProductsGroup />
           
         </Suspense>

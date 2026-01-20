@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 const footerLinks = [
   { label: "Powerwall", href: "/powerwall" },
@@ -13,6 +15,14 @@ const footerLinks = [
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted && resolvedTheme === 'dark';
 
   return (
     <footer 
@@ -35,7 +45,7 @@ export function Footer() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           style={{
             height: '2px',
-            backgroundColor: '#000000',
+            backgroundColor: 'var(--foreground)',
             marginBottom: 'clamp(40px, 8vw, 80px)',
           }} 
         />
@@ -69,7 +79,7 @@ export function Footer() {
                   />
                 </div>
                 <span style={{
-                  color: '#000000',
+                  color: 'var(--foreground)',
                   fontSize: '16px',
                   fontWeight: 600,
                   letterSpacing: '0.15em',
@@ -86,7 +96,7 @@ export function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.1 }}
               style={{
-                color: '#000000',
+                color: 'var(--foreground)',
                 fontSize: 'clamp(28px, 5vw, 48px)',
                 fontWeight: 700,
                 lineHeight: 1.1,
@@ -115,8 +125,8 @@ export function Footer() {
                   letterSpacing: '0.02em',
                   textDecoration: 'none',
                   borderRadius: '100px',
-                  backgroundColor: '#000000',
-                  color: '#ffffff',
+                  backgroundColor: 'var(--foreground)',
+                  color: 'var(--background)',
                   boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
                   cursor: 'default',
                 }}
@@ -152,8 +162,8 @@ export function Footer() {
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       padding: 'clamp(14px, 2vw, 20px) 0',
-                      borderBottom: '1px solid rgba(0,0,0,0.1)',
-                      color: '#000000',
+                      borderBottom: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
+                      color: 'var(--foreground)',
                       fontSize: 'clamp(16px, 1.5vw, 18px)',
                       fontWeight: 500,
                       textDecoration: 'none',
@@ -188,7 +198,7 @@ export function Footer() {
             gap: '16px',
             paddingTop: '24px',
             paddingBottom: '32px',
-            borderTop: '1px solid rgba(0,0,0,0.1)',
+            borderTop: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
           }}
         >
           {/* Left - copyright and location */}
@@ -200,7 +210,7 @@ export function Footer() {
           }}>
             <p style={{ 
               fontSize: '13px', 
-              color: 'rgba(0,0,0,0.4)',
+              color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
               margin: 0,
             }}>
               © {currentYear} STEVARA
@@ -209,11 +219,11 @@ export function Footer() {
               width: '4px',
               height: '4px',
               borderRadius: '50%',
-              backgroundColor: 'rgba(0,0,0,0.2)',
+              backgroundColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)',
             }} />
             <p style={{ 
               fontSize: '13px', 
-              color: 'rgba(0,0,0,0.4)',
+              color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
               margin: 0,
             }}>
               Працюємо по всій Україні
@@ -231,32 +241,32 @@ export function Footer() {
               href="mailto:info@stevara.ua" 
               style={{
                 fontSize: '13px',
-                color: 'rgba(0,0,0,0.6)',
+                color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
                 textDecoration: 'none',
                 transition: 'color 0.2s ease',
                 fontWeight: 500,
               }}
-              onMouseEnter={(e) => e.currentTarget.style.color = '#000000'}
-              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(0,0,0,0.6)'}
+              onMouseEnter={(e) => e.currentTarget.style.color = isDark ? '#ffffff' : '#000000'}
+              onMouseLeave={(e) => e.currentTarget.style.color = isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'}
             >
               info@stevara.ua
             </a>
             <span className="hide-mobile" style={{
               width: '1px',
               height: '12px',
-              backgroundColor: 'rgba(0,0,0,0.15)',
+              backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
             }} />
             <a 
               href="tel:+380441234567" 
               style={{
                 fontSize: '13px',
-                color: 'rgba(0,0,0,0.6)',
+                color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
                 textDecoration: 'none',
                 transition: 'color 0.2s ease',
                 fontWeight: 500,
               }}
-              onMouseEnter={(e) => e.currentTarget.style.color = '#000000'}
-              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(0,0,0,0.6)'}
+              onMouseEnter={(e) => e.currentTarget.style.color = isDark ? '#ffffff' : '#000000'}
+              onMouseLeave={(e) => e.currentTarget.style.color = isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'}
             >
               +380 (44) 123-45-67
             </a>

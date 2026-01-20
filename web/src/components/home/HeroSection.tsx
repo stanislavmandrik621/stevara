@@ -31,7 +31,7 @@ function AnimatedTitle({ children, delay = 0, accent = false }: {
   );
 }
 
-// Simple gradient background
+// Simple gradient background - adds warm glow at bottom
 function GradientBackground({ isDark }: { isDark: boolean }) {
   return (
     <div style={{
@@ -41,14 +41,14 @@ function GradientBackground({ isDark }: { isDark: boolean }) {
       pointerEvents: 'none',
       zIndex: 0,
     }}>
-      {/* Main gradient - soft yellow/gold at bottom */}
+      {/* Main gradient - soft yellow/gold at bottom only */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           background: isDark
-            ? 'linear-gradient(180deg, transparent 0%, transparent 40%, rgba(255,176,0,0.15) 70%, rgba(255,160,0,0.25) 100%)'
-            : 'linear-gradient(180deg, transparent 0%, transparent 35%, rgba(255,200,100,0.35) 65%, rgba(255,180,80,0.55) 100%)',
+            ? 'linear-gradient(180deg, transparent 0%, transparent 50%, rgba(255,176,0,0.12) 75%, rgba(255,160,0,0.2) 100%)'
+            : 'linear-gradient(180deg, transparent 0%, transparent 40%, rgba(255,200,100,0.3) 70%, rgba(255,180,80,0.5) 100%)',
         }}
       />
     </div>
@@ -129,17 +129,17 @@ export function HeroSection() {
           maxWidth: '1366px',
           borderRadius: '0 0 32px 32px',
           overflow: 'hidden',
-          backgroundColor: isDark ? '#1a1408' : '#FFF9EE',
+          backgroundColor: isDark ? '#0a0a0a' : '#ffffff',
           opacity: smoothOpacity,
         }}>
-        {/* Warm yellow/gold gradient background */}
+        {/* Warm yellow/gold gradient background - dark at top, warm at bottom */}
         <div style={{
           position: 'absolute',
           inset: 0,
           zIndex: 0,
           background: isDark 
-            ? 'linear-gradient(180deg, #1a1408 0%, #1f1a0c 30%, #2a2010 60%, #352812 100%)'
-            : 'linear-gradient(180deg, #FFFDF8 0%, #FFF9EE 30%, #FFF3DC 60%, #FFECC8 100%)',
+            ? 'linear-gradient(180deg, #0a0a0a 0%, #141200 25%, #1f1c00 50%, #2a2600 75%, #3d3700 100%)'
+            : 'linear-gradient(180deg, #ffffff 0%, #FFFDF8 20%, #FFF9EE 40%, #FFF3DC 70%, #FFECC8 100%)',
           pointerEvents: 'none',
         }} />
 
@@ -239,6 +239,8 @@ export function HeroSection() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-end',
+          overflow: 'hidden',
+          borderRadius: isMobileHero ? '0 0 32px 32px' : '0',
         }}>
           <div style={{ maxWidth: 'clamp(280px, 80vw, 520px)' }}>
           {/* Badge - Glossy effect */}
@@ -375,12 +377,14 @@ export function HeroSection() {
             transition={{ delay: 0.8, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
             style={{
               position: 'relative',
-              width: '100%',
-              height: '280px',
+              width: 'calc(100% + 120px)',
+              marginLeft: '-100px',
+              marginRight: '-20px',
+              height: '380px',
               pointerEvents: 'none',
               zIndex: 3,
-              marginTop: '32px',
-              marginBottom: '24px',
+              marginTop: '-40px',
+              marginBottom: '-56px',
             }}
           >
             <HeroScene isMobile={true} />
