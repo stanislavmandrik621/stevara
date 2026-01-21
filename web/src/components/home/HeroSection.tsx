@@ -45,7 +45,8 @@ export function HeroSection() {
       ref={sectionRef}
       style={{ 
         position: 'relative',
-        minHeight: '100vh',
+        height: '100dvh',
+        minHeight: isMobile ? '600px' : '700px',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
@@ -79,8 +80,8 @@ export function HeroSection() {
           transition={{ delay: 0.8, duration: 0.6 }}
           style={{
             position: 'absolute',
-            top: '100px',
-            left: '24px',
+            top: '80px',
+            left: '20px',
             zIndex: 20,
             width: '70px',
             height: '70px',
@@ -155,7 +156,7 @@ export function HeroSection() {
         justifyContent: 'flex-end',
         position: 'relative',
         zIndex: 10,
-        padding: isMobile ? '120px 20px 60px' : '140px 0 80px',
+        padding: isMobile ? '80px 20px 40px' : '140px 0 80px',
       }}>
         <div style={{
           width: '100%',
