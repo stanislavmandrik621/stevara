@@ -155,7 +155,7 @@ export function HeroSection() {
         justifyContent: 'flex-end',
         position: 'relative',
         zIndex: 10,
-        padding: isMobile ? '120px 24px 60px' : '140px 0 80px',
+        padding: isMobile ? '120px 20px 60px' : '140px 0 80px',
       }}>
         <div style={{
           width: '100%',
@@ -180,7 +180,7 @@ export function HeroSection() {
                 transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 style={{
                   fontFamily: 'var(--font-dm-serif), Georgia, "Times New Roman", serif',
-                  fontSize: isMobile ? 'clamp(32px, 9vw, 44px)' : 'clamp(44px, 4.5vw, 64px)',
+                  fontSize: isMobile ? 'clamp(28px, 7.5vw, 40px)' : 'clamp(44px, 4.5vw, 64px)',
                   fontWeight: 400,
                   letterSpacing: '-0.01em',
                   lineHeight: 1.15,
