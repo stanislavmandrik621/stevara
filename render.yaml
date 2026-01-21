@@ -7,13 +7,15 @@ services:
     staticPublishPath: out
     pullRequestPreviewsEnabled: true
     headers:
-      - path: /*
+      - path: /_next/static/**
         name: Cache-Control
         value: public, max-age=31536000, immutable
+      - path: /*.js
+        name: Content-Type
+        value: application/javascript
+      - path: /*.css
+        name: Content-Type
+        value: text/css
       - path: /
         name: Cache-Control
         value: public, max-age=0, must-revalidate
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
