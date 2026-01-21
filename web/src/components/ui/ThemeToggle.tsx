@@ -5,7 +5,11 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  isTransparent?: boolean;
+}
+
+export function ThemeToggle({ isTransparent = false }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
@@ -14,8 +18,10 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div style={{ width: '44px', height: '44px' }} />;
+    return <div style={{ width: '40px', height: '40px' }} />;
   }
+
+  const iconColor = isTransparent ? '#ffffff' : 'var(--foreground)';
 
   return (
     <button
@@ -25,20 +31,14 @@ export function ThemeToggle() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        width: '44px',
-        height: '44px',
+        width: '40px',
+        height: '40px',
         borderRadius: '50%',
         backgroundColor: 'transparent',
-        border: '1px solid var(--glass-border)',
+        border: 'none',
         cursor: 'pointer',
         transition: 'all 0.2s ease',
-        color: 'var(--foreground)',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = 'var(--glass-light)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = 'transparent';
+        color: iconColor,
       }}
       aria-label="Toggle theme"
     >
@@ -58,7 +58,7 @@ export function ThemeToggle() {
           justifyContent: 'center',
         }}
       >
-        <Moon style={{ width: '18px', height: '18px', color: 'var(--foreground)' }} />
+        <Moon style={{ width: '18px', height: '18px', color: iconColor, transition: 'color 0.3s ease' }} />
       </motion.div>
       <motion.div
         initial={false}
@@ -76,7 +76,7 @@ export function ThemeToggle() {
           justifyContent: 'center',
         }}
       >
-        <Sun style={{ width: '18px', height: '18px', color: 'var(--foreground)' }} />
+        <Sun style={{ width: '18px', height: '18px', color: iconColor, transition: 'color 0.3s ease' }} />
       </motion.div>
     </button>
   );

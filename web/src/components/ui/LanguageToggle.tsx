@@ -11,10 +11,13 @@ const languages = [
   { code: "ua" as Language, name: "Українська" },
 ];
 
-export function LanguageToggle() {
+interface LanguageToggleProps {
+  isTransparent?: boolean;
+}
+
+export function LanguageToggle({ isTransparent = false }: LanguageToggleProps) {
   const [lang, setLang] = React.useState<Language>("ua");
   const [isOpen, setIsOpen] = React.useState(false);
-  const [isHovered, setIsHovered] = React.useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -33,53 +36,30 @@ export function LanguageToggle() {
     setIsOpen(false);
   };
 
+  const iconColor = isTransparent ? '#ffffff' : 'var(--foreground)';
+
   return (
     <div style={{ position: 'relative' }} ref={dropdownRef}>
       {/* Trigger Button - Globe icon */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
         style={{
           position: 'relative',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          width: '44px',
-          height: '44px',
+          width: '40px',
+          height: '40px',
           borderRadius: '50%',
           transition: 'all 0.2s ease',
-          border: '1px solid',
+          border: 'none',
           cursor: 'pointer',
-          backgroundColor: isOpen ? 'var(--foreground)' : (isHovered ? 'var(--glass-light)' : 'transparent'),
-          borderColor: isOpen ? 'var(--foreground)' : 'var(--glass-border)',
-          color: isOpen ? 'var(--background)' : 'var(--foreground)',
+          backgroundColor: 'transparent',
+          color: iconColor,
         }}
         aria-label="Select language"
       >
-        <Globe style={{ width: '18px', height: '18px' }} />
-        {/* Small language badge */}
-        <span 
-          style={{
-            position: 'absolute',
-            bottom: '-2px',
-            right: '-2px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '18px',
-            height: '18px',
-            borderRadius: '50%',
-            backgroundColor: 'var(--background)',
-            border: '1px solid var(--glass-border)',
-            fontSize: '8px',
-            fontWeight: 700,
-            color: 'var(--foreground)',
-            textTransform: 'uppercase',
-          }}
-        >
-          {lang}
-        </span>
+        <Globe style={{ width: '18px', height: '18px', transition: 'color 0.3s ease' }} />
       </button>
 
       {/* Dropdown */}

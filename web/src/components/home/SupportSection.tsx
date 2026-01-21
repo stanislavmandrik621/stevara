@@ -1,164 +1,195 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView, useScroll, useTransform, useSpring } from "framer-motion";
+import { useState, useEffect } from "react";
 import { Headphones, Activity, MessageCircle, Calendar } from "lucide-react";
-
-function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 const supportFeatures = [
   {
     icon: Headphones,
     title: "Технічна підтримка",
-    description: "У форматі, визначеному договором",
+    description: "Оперативна допомога у форматі, визначеному договором",
   },
   {
     icon: Activity,
-    title: "Моніторинг",
-    description: "Ми бачимо, якщо щось не так",
+    title: "Моніторинг 24/7",
+    description: "Автоматичне відстеження стану системи в реальному часі",
   },
   {
     icon: MessageCircle,
     title: "Консультації",
-    description: "У разі нестандартних ситуацій",
+    description: "Експертна допомога у нестандартних ситуаціях",
   },
   {
     icon: Calendar,
     title: "Планові огляди",
-    description: "За узгодженою програмою",
+    description: "Регулярне обслуговування за узгодженим графіком",
   },
 ];
 
 export function SupportSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
+  const [isMobile, setIsMobile] = useState(false);
 
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const smoothOpacity = useSpring(opacity, { stiffness: 100, damping: 30 });
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   return (
     <section 
-      ref={sectionRef}
       className="section-padding"
       style={{ 
         position: 'relative',
-        backgroundColor: 'var(--background)',
+        backgroundColor: '#000000',
       }}
     >
-      <motion.div 
+      <div 
         style={{ 
-          opacity: smoothOpacity,
           width: '100%',
           maxWidth: '1280px',
           margin: '0 auto',
-          padding: '0 clamp(16px, 4vw, 24px)',
+          padding: isMobile ? '0 24px' : '0 48px',
         }}
       >
-        {/* Main content - centered statement */}
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(40px, 8vw, 80px)' }}>
-          <FadeIn>
-            <span className="text-label" style={{ display: 'block', marginBottom: '24px' }}>
-              Супровід
-            </span>
-          </FadeIn>
-          
-          <FadeIn delay={0.1}>
-            <h2 style={{ marginBottom: '24px' }}>
-              Система, яка залишається<br className="hide-mobile" /> під контролем
-            </h2>
-          </FadeIn>
-          
-          <FadeIn delay={0.2}>
-            <p className="text-lead" style={{ 
-              maxWidth: '600px', 
-              margin: '0 auto',
-            }}>
-              Ми залишаємось на зв'язку після введення системи в експлуатацію. 
-              Високоякісний та швидкий сервіс — це наш пріоритет.
-            </p>
-          </FadeIn>
+        {/* Header - always on top for mobile */}
+        <div style={{ marginBottom: isMobile ? '32px' : '0' }}>
+          {isMobile && (
+            <>
+              <span 
+                style={{
+                  display: 'inline-block',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  letterSpacing: '0.16em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.5)',
+                  marginBottom: '24px',
+                }}
+              >
+                Супровід
+              </span>
+              
+              <h2 style={{ 
+                color: '#ffffff',
+                marginBottom: '0',
+              }}>
+                Система під контролем — завжди
+              </h2>
+            </>
+          )}
         </div>
 
-        {/* 4-column feature grid - responsive */}
-        <div className="grid-responsive-4">
-          {supportFeatures.map((feature, index) => (
-            <FadeIn key={index} delay={0.3 + index * 0.1}>
-              <motion.div 
+        {/* Two-column layout */}
+        <div 
+          style={{ 
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+            gap: isMobile ? '0' : 'clamp(48px, 8vw, 100px)',
+            alignItems: 'start',
+          }}
+        >
+          {/* Left - Sticky header (desktop only) */}
+          {!isMobile && (
+            <div style={{ 
+              position: 'sticky',
+              top: '120px',
+            }}>
+              <span 
                 style={{
-                  padding: 'clamp(24px, 4vw, 32px) clamp(20px, 3vw, 24px)',
-                  borderRadius: '20px',
-                  backgroundColor: 'var(--background-secondary)',
-                  height: '100%',
+                  display: 'inline-block',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  letterSpacing: '0.16em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.5)',
+                  marginBottom: '24px',
+                }}
+              >
+                Супровід
+              </span>
+              
+              <h2 style={{ 
+                color: '#ffffff',
+                marginBottom: '24px',
+              }}>
+                Система під контролем — завжди
+              </h2>
+              
+              <p 
+                style={{ 
+                  margin: 0,
+                  fontSize: 'clamp(1rem, 1.5vw, 1.125rem)',
+                  lineHeight: 1.7,
+                  color: 'rgba(255,255,255,0.6)',
+                  maxWidth: '400px',
+                }}
+              >
+                Після запуску ми не зникаємо. Моніторинг, підтримка та сервіс — частина нашої роботи.
+              </p>
+            </div>
+          )}
+
+          {/* Right - Feature list */}
+          <div 
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: isMobile ? '0' : '1px',
+              backgroundColor: isMobile ? 'transparent' : 'rgba(255,255,255,0.1)',
+            }}
+          >
+            {supportFeatures.map((feature, index) => (
+              <div 
+                key={index}
+                style={{
+                  backgroundColor: '#000000',
+                  padding: isMobile ? '20px 0' : 'clamp(24px, 4vw, 32px)',
                   display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  gap: '14px',
+                  gap: '16px',
+                  alignItems: 'flex-start',
+                  borderBottom: isMobile ? '1px solid rgba(255,255,255,0.1)' : 'none',
                 }}
-                whileHover={{ 
-                  y: -8,
-                  backgroundColor: 'var(--brand-orange)',
-                }}
-                transition={{ duration: 0.3 }}
               >
                 {/* Icon */}
-                <motion.div 
+                <div
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '14px',
-                    backgroundColor: 'var(--brand-orange)',
-                  }}
-                  whileHover={{
-                    backgroundColor: '#000',
+                    flexShrink: 0,
+                    color: 'rgba(255,255,255,0.4)',
                   }}
                 >
                   <feature.icon style={{ 
                     width: '24px', 
-                    height: '24px', 
-                    color: '#000',
+                    height: '24px',
                   }} />
-                </motion.div>
+                </div>
                 
-                {/* Title */}
-                <h5 style={{ margin: 0 }}>
-                  {feature.title}
-                </h5>
-                
-                {/* Description */}
-                <p className="text-muted" style={{ 
-                  margin: 0,
-                  fontSize: '15px',
-                  lineHeight: 1.5,
-                }}>
-                  {feature.description}
-                </p>
-              </motion.div>
-            </FadeIn>
-          ))}
+                {/* Content */}
+                <div>
+                  <h5 style={{ 
+                    margin: 0,
+                    marginBottom: '8px',
+                    color: '#ffffff',
+                  }}>
+                    {feature.title}
+                  </h5>
+                  
+                  <p style={{ 
+                    margin: 0,
+                    fontSize: isMobile ? '14px' : 'clamp(0.875rem, 1.2vw, 0.95rem)',
+                    lineHeight: 1.6,
+                    color: 'rgba(255,255,255,0.5)',
+                  }}>
+                    {feature.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

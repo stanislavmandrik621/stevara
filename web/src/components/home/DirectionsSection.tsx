@@ -1,213 +1,310 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
+import { motion, useInView } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
-function ProductCard({ 
-  title, 
-  subtitle, 
-  description, 
-  buttonText,
-  bgColor,
-  bgImage,
-  isDark = true,
-}: {
-  title: string;
-  subtitle: string;
-  description: string;
-  buttonText: string;
-  bgColor: string;
-  bgImage?: string;
-  isDark?: boolean;
-}) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  
-  // Scroll-based opacity animation like hero
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ["start start", "end start"]
-  });
+const products = [
+  {
+    label: "Powerwall",
+    title: "Для приватних будинків",
+    description:
+      "Стабільна робота незалежно від стану мережі та резерв під час відключень.",
+    buttonText: "Дізнатись більше",
+    image: "/images/powerwall-house.jpeg",
+  },
+  {
+    label: "Megapack",
+    title: "Для бізнесу та інфраструктури",
+    description:
+      "Надійність, інтеграція з мережею та передбачувана експлуатація.",
+    buttonText: "Обговорити проєкт",
+    image: "/images/megapack.avif",
+  },
+];
 
-  const cardOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const smoothOpacity = useSpring(cardOpacity, { stiffness: 100, damping: 30 });
+function FadeIn({
+  children,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+}) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
     <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      style={{
-        position: 'relative',
-      }}
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
     >
-      <motion.div style={{ opacity: smoothOpacity }}>
-        <div 
-          style={{ 
-            display: 'flex',
-            flexDirection: 'column',
-            position: 'relative',
-            overflow: 'hidden',
-            height: 'clamp(420px, 55vw, 480px)',
-            borderRadius: 'clamp(20px, 3vw, 32px)',
-            textDecoration: 'none',
-            backgroundColor: bgColor,
-            cursor: 'default',
-          }}
-        >
-          {/* Background Image */}
-          {bgImage && (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundImage: `url(${bgImage})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center bottom',
-            }} />
-          )}
-          
-          {/* Gradient overlay from content to image - responsive */}
-          {bgImage && (
-            <div 
-              className={isDark ? "card-gradient-dark" : "card-gradient-light"}
-              style={{
-                position: 'absolute',
-                inset: 0,
-                background: isDark
-                  ? 'linear-gradient(180deg, rgba(24,24,27,1) 0%, rgba(24,24,27,0.95) 30%, rgba(24,24,27,0.7) 60%, rgba(24,24,27,0.3) 80%, transparent 100%)'
-                  : 'linear-gradient(180deg, rgba(255,176,0,1) 0%, rgba(255,176,0,0.95) 30%, rgba(255,176,0,0.7) 60%, rgba(255,176,0,0.3) 80%, transparent 100%)',
-                zIndex: 1,
-              }} 
-            />
-          )}
-
-          {/* Content - aligned with 1280px container */}
-          <div style={{
-            position: 'relative',
-            zIndex: 10,
-            width: '100%',
-            maxWidth: '1280px',
-            margin: '0 auto',
-            flex: 1,
-            display: 'flex',
-            padding: '0 clamp(16px, 4vw, 24px)',
-          }}>
-            <motion.div 
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                flex: 1,
-                padding: 'clamp(32px, 5vw, 56px) 0',
-                maxWidth: 'clamp(280px, 80%, 50%)',
-              }}
-            >
-            <div>
-              <span style={{
-                display: 'inline-block',
-                fontSize: 'clamp(10px, 1.2vw, 12px)',
-                fontWeight: 600,
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)',
-                marginBottom: 'clamp(16px, 3vw, 24px)',
-              }}>
-                {subtitle}
-              </span>
-              <h3 style={{ 
-                marginBottom: 'clamp(12px, 2vw, 20px)',
-                color: isDark ? '#ffffff' : '#000000',
-                fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
-              }}>
-                {title}
-              </h3>
-              <p style={{ 
-                fontSize: 'clamp(0.875rem, 1.2vw, 1.125rem)',
-                lineHeight: 1.7,
-                color: isDark ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.7)',
-              }}>
-                {description}
-              </p>
-            </div>
-
-            <div 
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: 'clamp(12px, 1.5vw, 14px) clamp(20px, 3vw, 28px)',
-                fontSize: 'clamp(13px, 1.2vw, 15px)',
-                fontWeight: 600,
-                letterSpacing: '0.02em',
-                color: isDark ? '#000000' : '#ffffff',
-                backgroundColor: isDark ? '#ffffff' : '#000000',
-                borderRadius: '100px',
-                boxShadow: isDark 
-                  ? '0 4px 20px rgba(255,255,255,0.2)'
-                  : '0 4px 20px rgba(0,0,0,0.3)',
-                width: 'fit-content',
-                cursor: 'default',
-              }}
-            >
-              {buttonText}
-              <ArrowRight style={{ width: '14px', height: '14px' }} />
-            </div>
-          </motion.div>
-          </div>
-        </div>
-      </motion.div>
+      {children}
     </motion.div>
   );
 }
 
-export function DirectionsSection() {
+function HeroStyleButton({ text, isDark = false }: { text: string; isDark?: boolean }) {
   return (
-    <section 
+    <div
+      className="cta-group"
       style={{ 
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '0 24px 24px 24px',
-        backgroundColor: 'var(--background)',
+        display: 'flex', 
+        alignItems: 'center', 
+        cursor: 'pointer',
+        width: 'fit-content',
+      }}
+      onMouseEnter={(e) => {
+        const btn = e.currentTarget.querySelector('.cta-btn') as HTMLElement;
+        const arrow = e.currentTarget.querySelector('.cta-arrow') as HTMLElement;
+        const arrowIcon = e.currentTarget.querySelector('.cta-arrow svg') as HTMLElement;
+        const span = e.currentTarget.querySelector('.cta-btn span') as HTMLElement;
+        if (btn) {
+          btn.style.backgroundColor = 'transparent';
+          btn.style.borderColor = isDark ? '#ffffff' : '#1d1d1f';
+        }
+        if (span) span.style.color = isDark ? '#ffffff' : '#1d1d1f';
+        if (arrow) {
+          arrow.style.backgroundColor = isDark ? '#1d1d1f' : '#ffffff';
+          arrow.style.borderColor = isDark ? '#1d1d1f' : '#ffffff';
+        }
+        if (arrowIcon) arrowIcon.style.color = isDark ? '#ffffff' : '#1d1d1f';
+      }}
+      onMouseLeave={(e) => {
+        const btn = e.currentTarget.querySelector('.cta-btn') as HTMLElement;
+        const arrow = e.currentTarget.querySelector('.cta-arrow') as HTMLElement;
+        const arrowIcon = e.currentTarget.querySelector('.cta-arrow svg') as HTMLElement;
+        const span = e.currentTarget.querySelector('.cta-btn span') as HTMLElement;
+        if (btn) {
+          btn.style.backgroundColor = isDark ? '#ffffff' : '#1d1d1f';
+          btn.style.borderColor = isDark ? '#ffffff' : '#1d1d1f';
+        }
+        if (span) span.style.color = isDark ? '#1d1d1f' : '#ffffff';
+        if (arrow) {
+          arrow.style.backgroundColor = isDark ? '#1d1d1f' : '#ffffff';
+          arrow.style.borderColor = isDark ? '#ffffff' : '#1d1d1f';
+        }
+        if (arrowIcon) arrowIcon.style.color = isDark ? '#ffffff' : '#1d1d1f';
       }}
     >
-      {/* Stacked cards - same width as hero background (1366px) */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'clamp(12px, 2vw, 24px)',
-        width: '100%',
-        maxWidth: '1366px',
-      }}>
-        {/* Powerwall Card */}
-        <ProductCard
-          subtitle="Powerwall"
-          title="Для приватних будинків"
-          description="Tesla Powerwall для об'єктів, де важлива стабільна робота незалежно від стану мережі."
-          buttonText="Дізнатись більше"
-          bgColor="#18181b"
-          bgImage="/images/powerwall-house.jpeg"
-          isDark={true}
-        />
+      <div
+        className="cta-btn"
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          height: '48px',
+          padding: '0 24px',
+          borderRadius: '100px',
+          backgroundColor: isDark ? '#ffffff' : '#1d1d1f',
+          border: `2px solid ${isDark ? '#ffffff' : '#1d1d1f'}`,
+          transition: 'all 0.25s ease',
+        }}
+      >
+        <span style={{
+          fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+          fontSize: '14px',
+          fontWeight: 600,
+          letterSpacing: '0.01em',
+          color: isDark ? '#1d1d1f' : '#ffffff',
+          transition: 'color 0.25s ease',
+        }}>
+          {text}
+        </span>
+      </div>
+      
+      <div
+        className="cta-arrow"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '48px',
+          height: '48px',
+          borderRadius: '50%',
+          backgroundColor: isDark ? '#1d1d1f' : '#ffffff',
+          border: `2px solid ${isDark ? '#ffffff' : '#1d1d1f'}`,
+          marginLeft: '1px',
+          transition: 'all 0.25s ease',
+        }}
+      >
+        <ArrowRight style={{ 
+          width: '18px', 
+          height: '18px',
+          color: isDark ? '#ffffff' : '#1d1d1f',
+          transform: 'rotate(-45deg)',
+        }} />
+      </div>
+    </div>
+  );
+}
 
-        {/* Megapack Card */}
-        <ProductCard
-          subtitle="Megapack"
-          title="Для бізнесу та інфраструктури"
-          description="Tesla Megapack для об'єктів, де критичні надійність, інтеграція з мережею і передбачувана експлуатація."
-          buttonText="Обговорити проєкт"
-          bgColor="#FFB000"
-          bgImage="/images/megapack.avif"
-          isDark={false}
+function ProductBlock({
+  label,
+  title,
+  description,
+  buttonText,
+  image,
+  index,
+  isMobile,
+}: {
+  label: string;
+  title: string;
+  description: string;
+  buttonText: string;
+  image: string;
+  index: number;
+  isMobile: boolean;
+}) {
+  const isReversed = index % 2 === 1;
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        minHeight: isMobile ? "clamp(450px, 80vh, 600px)" : "clamp(500px, 70vh, 700px)",
+        display: "flex",
+        alignItems: isMobile ? "flex-end" : "center",
+        overflow: "hidden",
+        paddingBottom: isMobile ? "60px" : 0,
+      }}
+    >
+      {/* Full-width background image */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+        }}
+      >
+        <Image
+          src={image}
+          alt={label}
+          fill
+          sizes="100vw"
+          style={{ 
+            objectFit: "cover", 
+            objectPosition: index === 0 ? "center 70%" : "center center" 
+          }}
+          priority={index === 0}
+        />
+        {/* Gradient overlay - vertical on mobile, horizontal on desktop */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: isMobile
+              ? "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0.3) 60%, transparent 100%)"
+              : isReversed
+                ? "linear-gradient(to left, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.2) 70%, transparent 100%)"
+                : "linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.2) 70%, transparent 100%)",
+          }}
         />
       </div>
+
+      {/* Content */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 10,
+          width: "100%",
+          maxWidth: "1280px",
+          margin: "0 auto",
+          padding: "0 24px",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: isMobile ? "100%" : "520px",
+            marginLeft: isMobile ? 0 : (isReversed ? "auto" : 0),
+            marginRight: isMobile ? 0 : (isReversed ? 0 : "auto"),
+          }}
+        >
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            style={{
+              display: "inline-block",
+              fontSize: "12px",
+              fontWeight: 600,
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.6)",
+              marginBottom: "20px",
+            }}
+          >
+            {label}
+          </motion.span>
+          
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            style={{ 
+              marginBottom: "20px",
+              color: "#ffffff",
+            }}
+          >
+            {title}
+          </motion.h2>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            style={{
+              margin: 0,
+              marginBottom: "32px",
+              fontSize: "clamp(1rem, 1.5vw, 1.125rem)",
+              lineHeight: 1.7,
+              color: "rgba(255,255,255,0.75)",
+              maxWidth: "440px",
+            }}
+          >
+            {description}
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <HeroStyleButton text={buttonText} isDark />
+          </motion.div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function DirectionsSection() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
+  return (
+    <section
+      style={{
+        position: "relative",
+        backgroundColor: "var(--background)",
+      }}
+    >
+      {products.map((product, index) => (
+        <ProductBlock key={product.label} {...product} index={index} isMobile={isMobile} />
+      ))}
     </section>
   );
 }

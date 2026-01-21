@@ -1,10 +1,21 @@
-import { Outfit, JetBrains_Mono } from "next/font/google";
+import { DM_Serif_Display, Inter, JetBrains_Mono } from "next/font/google";
 
-export const outfit = Outfit({
+// DM Serif Display - Premium editorial serif for headlines
+// High-impact, elegant headlines like Tesla & premium brands
+export const dmSerif = DM_Serif_Display({
   subsets: ["latin", "latin-ext"],
-  variable: "--font-outfit",
+  variable: "--font-dm-serif",
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400"],
+});
+
+// Inter - Modern, clean sans-serif for body text
+// Excellent readability, professional feel
+export const inter = Inter({
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  variable: "--font-inter",
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const jetbrainsMono = JetBrains_Mono({
@@ -13,3 +24,7 @@ export const jetbrainsMono = JetBrains_Mono({
   display: "swap",
   weight: ["400", "500"],
 });
+
+// Legacy exports for compatibility
+export const playfair = dmSerif;
+export const sourceSerif = inter;

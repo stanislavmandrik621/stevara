@@ -1,7 +1,10 @@
 export { HeroSection } from './HeroSection';
 export { IntroSection } from './IntroSection';
+export { OfficialHighlightsSection } from './OfficialHighlightsSection';
+export { EnergyBenefitsSection } from './EnergyBenefitsSection';
 export { DirectionsSection } from './DirectionsSection';
 export { ValueSection } from './ValueSection';
+export { ImageBreakSection } from './ImageBreakSection';
 export { TrustSection } from './TrustSection';
 export { SupportSection } from './SupportSection';
 export { FAQSection } from './FAQSection';

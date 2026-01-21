@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
@@ -45,17 +44,15 @@ export function Navbar() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      // Track if page is scrolled for header position
-      setIsScrolled(currentScrollY > 50);
+      // Track if page is scrolled for background change
+      setIsScrolled(currentScrollY > 80);
       
-      // More generous threshold - only hide after scrolling down 200px
+      // Show/hide on scroll
       if (currentScrollY < 200) {
         setIsVisible(true);
       } else if (currentScrollY > lastScrollY + 10) {
-        // Only hide if scrolling down by more than 10px (reduces sensitivity)
         setIsVisible(false);
       } else if (currentScrollY < lastScrollY - 5) {
-        // Show when scrolling up by more than 5px
         setIsVisible(true);
       }
       setLastScrollY(currentScrollY);
@@ -78,211 +75,229 @@ export function Navbar() {
 
   const isDark = mounted && resolvedTheme === 'dark';
 
-  // Mobile gets fixed small padding, desktop gets dynamic padding based on scroll
-  const getTopPadding = () => {
-    if (isMobile) {
-      return '16px'; // Fixed small padding on mobile
-    }
-    return isScrolled ? '12px' : '56px'; // Dynamic on desktop
-  };
-
   return (
     <>
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ 
-          y: isVisible ? 0 : -150, 
+          y: isVisible ? 0 : -100, 
           opacity: isVisible ? 1 : 0,
-          paddingTop: getTopPadding()
         }}
-        transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+        transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
           zIndex: 50,
-          paddingBottom: '12px',
+          backgroundColor: isScrolled 
+            ? (isDark ? 'rgba(0, 0, 0, 0.95)' : 'rgba(255, 255, 255, 0.98)')
+            : 'transparent',
+          backdropFilter: isScrolled ? 'blur(20px)' : 'none',
+          WebkitBackdropFilter: isScrolled ? 'blur(20px)' : 'none',
+          borderBottom: isScrolled 
+            ? (isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)')
+            : '1px solid transparent',
+          transition: 'background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease',
         }}
       >
-        {/* Container - 1280px max */}
+        {/* Container - same as hero content */}
         <div style={{
           width: '100%',
           maxWidth: '1280px',
           margin: '0 auto',
-          padding: '0 24px',
+          padding: isMobile ? '16px 24px' : '20px 48px',
         }}>
-          {/* Nav pill - Glass effect */}
+          {/* Nav content */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '12px 20px',
-              backgroundColor: isDark ? 'rgba(30, 30, 35, 0.7)' : 'rgba(255, 255, 255, 0.75)',
-              backdropFilter: 'blur(24px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-              borderRadius: '18px',
-              border: isDark ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.9)',
-              boxShadow: isDark 
-                ? '0 4px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.05)' 
-                : '0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.8)',
-              transition: 'background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease',
             }}
           >
-            <span 
+            {/* Logo - just text */}
+            <Link 
+              href="/"
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
                 textDecoration: 'none',
-                height: '44px',
-                cursor: 'default',
+                cursor: 'pointer',
               }}
             >
-              <div style={{ 
-                position: 'relative', 
-                width: '28px', 
-                height: '28px',
-              }}>
-                <Image 
-                  src="/images/logo.svg" 
-                  alt="STEVARA Logo" 
-                  fill
-                  style={{ objectFit: 'contain' }}
-                  priority
-                />
-              </div>
               <span style={{
-                color: 'var(--foreground)',
+                fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+                color: isScrolled 
+                  ? 'var(--foreground)' 
+                  : '#ffffff',
                 fontSize: '15px',
                 fontWeight: 600,
-                letterSpacing: '0.22em',
+                letterSpacing: '0.25em',
                 textTransform: 'uppercase',
                 transition: 'color 0.3s ease',
               }}>
                 STEVARA
               </span>
-            </span>
+            </Link>
 
+            {/* Center nav links - Desktop */}
             {!isMobile && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <nav
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '3px',
-                    padding: '5px',
-                    backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.04)',
-                    borderRadius: '100px',
-                    border: isDark ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(255,255,255,0.5)',
-                    boxShadow: isDark 
-                      ? 'inset 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 2px rgba(0,0,0,0.2)'
-                      : 'inset 0 2px 4px rgba(0,0,0,0.06), inset 0 1px 2px rgba(0,0,0,0.04)',
-                    height: '44px',
-                    transition: 'all 0.3s ease',
+              <nav style={{
+                position: 'absolute',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '32px',
+              }}>
+                {navLinks.map((link) => {
+                  const isActive = pathname === link.href;
+                  const isDisabled = link.href !== "/";
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={(e) => isDisabled && e.preventDefault()}
+                      style={{
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        letterSpacing: '0.02em',
+                        textDecoration: 'none',
+                        color: isScrolled
+                          ? (isActive ? 'var(--foreground)' : 'var(--foreground-muted)')
+                          : (isActive ? '#ffffff' : 'rgba(255,255,255,0.7)'),
+                        transition: 'color 0.2s ease',
+                        cursor: isDisabled ? 'default' : 'pointer',
+                      }}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+            )}
+
+            {/* Right side controls */}
+            {!isMobile && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <ThemeToggle isTransparent={!isScrolled} />
+                <LanguageToggle isTransparent={!isScrolled} />
+                
+                {/* CTA Button - Hero style (right most) */}
+                <div
+                  className="nav-cta-group"
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    cursor: 'pointer',
+                    marginLeft: '12px',
+                  }}
+                  onMouseEnter={(e) => {
+                    const btn = e.currentTarget.querySelector('.nav-cta-btn') as HTMLElement;
+                    const arrow = e.currentTarget.querySelector('.nav-cta-arrow') as HTMLElement;
+                    const arrowIcon = e.currentTarget.querySelector('.nav-cta-arrow svg') as HTMLElement;
+                    const span = e.currentTarget.querySelector('.nav-cta-btn span') as HTMLElement;
+                    if (btn) {
+                      btn.style.backgroundColor = 'transparent';
+                      btn.style.borderColor = isScrolled ? 'var(--foreground)' : '#ffffff';
+                    }
+                    if (span) span.style.color = isScrolled ? 'var(--foreground)' : '#ffffff';
+                    if (arrow) {
+                      arrow.style.backgroundColor = isScrolled ? 'var(--foreground)' : '#1d1d1f';
+                      arrow.style.borderColor = isScrolled ? 'var(--foreground)' : '#1d1d1f';
+                    }
+                    if (arrowIcon) arrowIcon.style.color = '#ffffff';
+                  }}
+                  onMouseLeave={(e) => {
+                    const btn = e.currentTarget.querySelector('.nav-cta-btn') as HTMLElement;
+                    const arrow = e.currentTarget.querySelector('.nav-cta-arrow') as HTMLElement;
+                    const arrowIcon = e.currentTarget.querySelector('.nav-cta-arrow svg') as HTMLElement;
+                    const span = e.currentTarget.querySelector('.nav-cta-btn span') as HTMLElement;
+                    if (btn) {
+                      btn.style.backgroundColor = isScrolled ? 'var(--foreground)' : '#ffffff';
+                      btn.style.borderColor = isScrolled ? 'var(--foreground)' : '#ffffff';
+                    }
+                    if (span) span.style.color = isScrolled ? 'var(--background)' : '#1d1d1f';
+                    if (arrow) {
+                      arrow.style.backgroundColor = isScrolled ? 'var(--background)' : '#1d1d1f';
+                      arrow.style.borderColor = isScrolled ? 'var(--foreground)' : '#ffffff';
+                    }
+                    if (arrowIcon) arrowIcon.style.color = isScrolled ? 'var(--foreground)' : '#ffffff';
                   }}
                 >
-                  {navLinks.map((link) => {
-                    const isActive = pathname === link.href;
-                    const isDisabled = link.href !== "/";
-                    return (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={(e) => isDisabled && e.preventDefault()}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: '0 16px',
-                          height: '34px',
-                          fontSize: '12px',
-                          fontWeight: isActive ? 600 : 500,
-                          letterSpacing: '0.1em',
-                          textTransform: 'uppercase',
-                          textDecoration: 'none',
-                          borderRadius: '100px',
-                          color: isActive ? 'var(--background)' : 'var(--foreground-muted)',
-                          backgroundColor: isActive ? 'var(--foreground)' : 'transparent',
-                          boxShadow: isActive 
-                            ? (isDark 
-                              ? '0 2px 8px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
-                              : '0 2px 8px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2)')
-                            : 'none',
-                          transition: 'all 0.2s ease',
-                          cursor: 'default',
-                        }}
-                      >
-                        {link.label}
-                      </Link>
-                    );
-                  })}
-                </nav>
-
-                <div style={{ 
-                  height: '44px',
-                  width: '1px', 
-                  backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)', 
-                  margin: '0 6px'
-                }} />
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <ThemeToggle />
-                  <LanguageToggle />
+                  <div
+                    className="nav-cta-btn"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      height: '40px',
+                      padding: '0 20px',
+                      borderRadius: '100px',
+                      backgroundColor: isScrolled ? 'var(--foreground)' : '#ffffff',
+                      border: `2px solid ${isScrolled ? 'var(--foreground)' : '#ffffff'}`,
+                      transition: 'all 0.25s ease',
+                    }}
+                  >
+                    <span style={{
+                      fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      letterSpacing: '0.01em',
+                      color: isScrolled ? 'var(--background)' : '#1d1d1f',
+                      transition: 'color 0.25s ease',
+                    }}>
+                      Запит
+                    </span>
+                  </div>
+                  
+                  <div
+                    className="nav-cta-arrow"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      backgroundColor: isScrolled ? 'var(--background)' : '#1d1d1f',
+                      border: `2px solid ${isScrolled ? 'var(--foreground)' : '#ffffff'}`,
+                      marginLeft: '1px',
+                      transition: 'all 0.25s ease',
+                    }}
+                  >
+                    <ArrowRight style={{ 
+                      width: '16px', 
+                      height: '16px',
+                      color: isScrolled ? 'var(--foreground)' : '#ffffff',
+                      transform: 'rotate(-45deg)',
+                    }} />
+                  </div>
                 </div>
-
-                <span
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    padding: '0 24px',
-                    height: '44px',
-                    backgroundColor: 'var(--foreground)',
-                    color: 'var(--background)',
-                    fontSize: '12px',
-                    fontWeight: 600,
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    textDecoration: 'none',
-                    borderRadius: '100px',
-                    boxShadow: isDark
-                      ? '0 4px 12px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)'
-                      : '0 4px 12px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.25)',
-                    transition: 'all 0.2s ease',
-                    cursor: 'default',
-                  }}
-                >
-                  <span>Запит</span>
-                  <ArrowRight style={{ width: '14px', height: '14px' }} />
-                </span>
               </div>
             )}
 
+            {/* Mobile menu button */}
             {isMobile && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <ThemeToggle />
-                <LanguageToggle />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <ThemeToggle isTransparent={!isScrolled} />
+                <LanguageToggle isTransparent={!isScrolled} />
                 <button
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '12px',
-                    backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
-                    border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '8px',
+                    backgroundColor: 'transparent',
+                    border: 'none',
                     cursor: 'pointer',
-                    color: 'var(--foreground)',
-                    transition: 'all 0.3s ease',
+                    color: isScrolled ? 'var(--foreground)' : '#ffffff',
+                    transition: 'color 0.3s ease',
                   }}
                   aria-label="Toggle menu"
                 >
-                  <Menu style={{ width: '18px', height: '18px' }} />
+                  <Menu style={{ width: '22px', height: '22px' }} />
                 </button>
               </div>
             )}

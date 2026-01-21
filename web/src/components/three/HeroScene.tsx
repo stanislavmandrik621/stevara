@@ -2,7 +2,6 @@
 
 import { Suspense, useRef, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Environment } from "@react-three/drei";
 import { PowerwallModel } from "./PowerwallModel";
 import { MegapackModel } from "./MegapackModel";
 import * as THREE from "three";
@@ -35,11 +34,9 @@ function AnimatedModel({
     if (!groupRef.current) return;
 
     if (isVisible && progressRef.current < 1) {
-      // Smooth easing animation
       progressRef.current = Math.min(1, progressRef.current + delta * 0.8);
-      const eased = 1 - Math.pow(1 - progressRef.current, 3); // Ease out cubic
+      const eased = 1 - Math.pow(1 - progressRef.current, 3);
       
-      // Animate from start position to target
       groupRef.current.position.x = THREE.MathUtils.lerp(
         targetPosition[0] + startOffset[0], 
         targetPosition[0], 
@@ -56,11 +53,8 @@ function AnimatedModel({
         eased
       );
       
-      // Scale up animation
       const scale = eased;
       groupRef.current.scale.setScalar(scale);
-      
-      // Slight rotation during entrance
       groupRef.current.rotation.y = (1 - eased) * 0.3;
     }
   });
@@ -76,29 +70,56 @@ function AnimatedModel({
   );
 }
 
-function ProductsGroup() {
+// Centered products group for premium look
+function ProductsGroup({ isMobile }: { isMobile: boolean }) {
+  if (isMobile) {
+    return (
+      <group>
+        {/* Mobile - simplified centered layout */}
+        <AnimatedModel 
+          delay={600} 
+          targetPosition={[1.5, -1, -2]}
+          startOffset={[1, -2, 0]}
+        >
+          <MegapackModel 
+            scale={2} 
+            autoRotate={false} 
+            position={[0, 0, 0]}
+          />
+        </AnimatedModel>
+
+        <AnimatedModel 
+          delay={900} 
+          targetPosition={[-1, -1.5, 1]}
+          startOffset={[-1, -2, 0]}
+        >
+          <PowerwallModel scale={0.5} autoRotate={false} variant="light" />
+        </AnimatedModel>
+      </group>
+    );
+  }
+
   return (
     <group>
-      {/* Megapack - big in background, appears first */}
+      {/* Desktop - premium centered composition */}
       <AnimatedModel 
-        delay={800} 
-        targetPosition={[3, -1.2, -3]}
-        startOffset={[2, -2, -3]}
+        delay={600} 
+        targetPosition={[2.5, -1.2, -2]}
+        startOffset={[2, -2, -2]}
       >
         <MegapackModel 
-          scale={2.6} 
+          scale={2.8} 
           autoRotate={false} 
           position={[0, 0, 0]}
         />
       </AnimatedModel>
 
-      {/* Powerwall - small in front, appears second */}
       <AnimatedModel 
-        delay={1200} 
-        targetPosition={[1.5, -2.0, 1.5]}
-        startOffset={[1, -2, 0]}
+        delay={900} 
+        targetPosition={[-1.5, -2, 1.5]}
+        startOffset={[-1, -2, 0]}
       >
-        <PowerwallModel scale={0.55} autoRotate={false} variant="light" />
+        <PowerwallModel scale={0.6} autoRotate={false} variant="light" />
       </AnimatedModel>
     </group>
   );
@@ -108,51 +129,38 @@ function SceneLighting({ isDark }: { isDark: boolean }) {
   if (isDark) {
     return (
       <>
-        {/* Dark mode - futuristic cool lighting */}
-        <ambientLight intensity={0.4} color="#e0f0ff" />
+        {/* Dark mode - clean, minimal lighting */}
+        <ambientLight intensity={0.5} color="#ffffff" />
         <directionalLight 
           position={[10, 15, 10]} 
-          intensity={1.5} 
+          intensity={1.2} 
           color="#ffffff"
           castShadow
           shadow-mapSize={[2048, 2048]}
-          shadow-camera-far={50}
-          shadow-camera-left={-10}
-          shadow-camera-right={10}
-          shadow-camera-top={10}
-          shadow-camera-bottom={-10}
         />
-        <directionalLight position={[-8, 6, 5]} intensity={0.6} color="#a0c0ff" />
-        <pointLight position={[0, -3, 5]} intensity={0.8} color="#00d4ff" distance={15} />
-        <pointLight position={[0, 8, -6]} intensity={0.4} color="#a855f7" distance={20} />
-        <pointLight position={[-6, 3, 3]} intensity={0.4} color="#00ffcc" distance={12} />
-        <pointLight position={[6, 3, 3]} intensity={0.3} color="#ffffff" distance={12} />
-        <hemisphereLight intensity={0.3} color="#ffffff" groundColor="#0066ff" />
+        <directionalLight position={[-8, 6, 5]} intensity={0.5} color="#e0e0e0" />
+        <pointLight position={[0, -3, 5]} intensity={0.6} color="#ffffff" distance={15} />
+        <hemisphereLight intensity={0.3} color="#ffffff" groundColor="#333333" />
       </>
     );
   }
   
   return (
     <>
-      {/* Light mode - softer studio lighting */}
-      <ambientLight intensity={0.35} color="#fffaf0" />
+      {/* Light mode - clean studio lighting */}
+      <ambientLight intensity={0.6} color="#ffffff" />
       <directionalLight 
         position={[10, 15, 10]} 
         intensity={1} 
         color="#ffffff"
         castShadow
         shadow-mapSize={[2048, 2048]}
-        shadow-camera-far={50}
-        shadow-camera-left={-10}
-        shadow-camera-right={10}
-        shadow-camera-top={10}
-        shadow-camera-bottom={-10}
       />
-      <directionalLight position={[-8, 8, 5]} intensity={0.4} color="#fff5e6" />
-      <directionalLight position={[0, -5, 8]} intensity={0.2} color="#ffeedd" />
+      <directionalLight position={[-8, 8, 5]} intensity={0.4} color="#f5f5f7" />
+      <directionalLight position={[0, -5, 8]} intensity={0.2} color="#ffffff" />
       <pointLight position={[8, 4, 6]} intensity={0.3} color="#ffffff" distance={20} />
-      <pointLight position={[-8, 4, 6]} intensity={0.25} color="#ffcc80" distance={20} />
-      <hemisphereLight intensity={0.2} color="#ffffff" groundColor="#ffaa66" />
+      <pointLight position={[-8, 4, 6]} intensity={0.25} color="#f0f0f0" distance={20} />
+      <hemisphereLight intensity={0.25} color="#ffffff" groundColor="#e0e0e0" />
     </>
   );
 }
@@ -165,13 +173,12 @@ export function HeroScene({ isMobile = false }: { isMobile?: boolean }) {
     <div style={{ position: 'absolute', inset: 0 }}>
       <Canvas
         camera={{ 
-          // Mobile: lower camera Y to move objects UP, same angle otherwise
-          position: isMobile ? [0, -1, 7] : [0, 1.5, 12], 
+          position: isMobile ? [0, 0, 8] : [0, 0.5, 10], 
           fov: 40, 
           near: 0.1, 
           far: 100 
         }}
-        dpr={[2, 3]}
+        dpr={[1.5, 2]}
         shadows
         gl={{
           antialias: true,
@@ -182,10 +189,7 @@ export function HeroScene({ isMobile = false }: { isMobile?: boolean }) {
       >
         <Suspense fallback={null}>
           <SceneLighting isDark={isDark} />
-
-          {/* Products group - same layout for both */}
-          <ProductsGroup />
-          
+          <ProductsGroup isMobile={isMobile} />
         </Suspense>
       </Canvas>
     </div>

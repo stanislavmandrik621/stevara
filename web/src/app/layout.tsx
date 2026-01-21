@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { outfit, jetbrainsMono } from "@/lib/fonts";
+import { dmSerif, inter, jetbrainsMono } from "@/lib/fonts";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
@@ -44,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${outfit.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${dmSerif.variable} ${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <body className="antialiased">
         <ThemeProvider
           attribute="class"

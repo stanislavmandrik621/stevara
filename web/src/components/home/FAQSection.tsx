@@ -1,23 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, useInView, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
-
-function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
-}
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const faqs = [
   {
@@ -48,105 +32,132 @@ const faqs = [
 
 export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const sectionRef = useRef<HTMLElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
+  const [isMobile, setIsMobile] = useState(false);
 
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const smoothOpacity = useSpring(opacity, { stiffness: 100, damping: 30 });
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   return (
     <section 
-      ref={sectionRef}
+      className="section-padding"
       style={{ 
         position: 'relative',
-        padding: 'clamp(40px, 6vw, 60px) 0',
         backgroundColor: 'var(--background)',
+        borderTop: '1px solid var(--divider)',
       }}
     >
-      <motion.div 
+      <div 
         style={{
-          opacity: smoothOpacity,
           width: '100%',
           maxWidth: '1280px',
           margin: '0 auto',
-          padding: '0 clamp(16px, 4vw, 24px)',
+          padding: isMobile ? '0 24px' : '0 48px',
         }}
       >
-        {/* Top divider line */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          style={{
-            height: '1px',
-            backgroundColor: 'var(--foreground)',
-            opacity: 0.1,
-            transformOrigin: 'left',
-            marginBottom: 'clamp(32px, 5vw, 48px)',
-          }}
-        />
+        {/* Header - always on top for mobile */}
+        {isMobile && (
+          <div style={{ marginBottom: '32px' }}>
+            <span className="text-label" style={{ display: 'block', marginBottom: '20px' }}>
+              FAQ
+            </span>
+            <h2>Питання та відповіді</h2>
+          </div>
+        )}
 
-        {/* Two column layout - responsive */}
-        <div className="grid-responsive-12" style={{ gap: 'clamp(32px, 6vw, 80px)' }}>
-          {/* Left - Header */}
-          <div className="lg-col-span-4">
-            <FadeIn>
-              <span className="text-label" style={{ display: 'block', marginBottom: '24px' }}>
+        {/* Two column layout */}
+        <div 
+          style={{ 
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : '1fr 2fr',
+            gap: isMobile ? '0' : 'clamp(60px, 10vw, 120px)',
+          }}
+        >
+          {/* Left - Header (sticky on desktop only) */}
+          {!isMobile && (
+            <div style={{ 
+              position: 'sticky',
+              top: '120px',
+              alignSelf: 'start',
+            }}>
+              <span className="text-label" style={{ display: 'block', marginBottom: '20px' }}>
                 FAQ
               </span>
-            </FadeIn>
-            <FadeIn delay={0.1}>
               <h2>Питання та відповіді</h2>
-            </FadeIn>
-          </div>
+            </div>
+          )}
 
           {/* Right - Questions */}
-          <div className="lg-col-span-8">
+          <div>
             {faqs.map((faq, index) => (
-              <FadeIn key={index} delay={0.2 + index * 0.05}>
-                <div 
-                  onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  style={{
-                    borderBottom: index < faqs.length - 1 ? '1px solid' : 'none',
-                    borderColor: 'rgba(128,128,128,0.15)',
-                    cursor: 'pointer',
-                    paddingBottom: 'clamp(20px, 4vw, 32px)',
-                    marginBottom: 'clamp(20px, 4vw, 32px)',
-                  }}
-                >
+              <div 
+                key={index}
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                style={{
+                  borderBottom: '1px solid var(--divider)',
+                  cursor: 'pointer',
+                  padding: isMobile ? '20px 0' : 'clamp(24px, 4vw, 32px) 0',
+                }}
+              >
                   <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    gap: '16px',
+                    alignItems: 'center',
+                    gap: '32px',
                   }}>
+                    {/* Question */}
                     <h4 style={{ 
                       margin: 0,
+                      flex: 1,
                       fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
-                      color: openIndex === index ? 'var(--brand-orange)' : 'var(--foreground)',
-                      transition: 'color 0.3s ease',
+                      fontWeight: 500,
                     }}>
                       {faq.question}
                     </h4>
-                    <motion.span
-                      animate={{ rotate: openIndex === index ? 180 : 0 }}
-                      transition={{ duration: 0.3 }}
+                    
+                    {/* Minimal toggle icon */}
+                    <motion.div
                       style={{
-                        fontSize: '24px',
-                        fontWeight: 300,
-                        color: openIndex === index ? 'var(--brand-orange)' : 'var(--foreground)',
-                        opacity: 0.5,
+                        position: 'relative',
+                        width: '48px',
+                        height: '48px',
                         flexShrink: 0,
-                        lineHeight: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
                     >
-                      {openIndex === index ? '−' : '+'}
-                    </motion.span>
+                      {/* Horizontal line */}
+                      <motion.span
+                        style={{
+                          position: 'absolute',
+                          width: '20px',
+                          height: '2px',
+                          backgroundColor: 'var(--foreground)',
+                          borderRadius: '1px',
+                        }}
+                      />
+                      {/* Vertical line - animates */}
+                      <motion.span
+                        animate={{ 
+                          rotate: openIndex === index ? 90 : 0,
+                          opacity: openIndex === index ? 0 : 1,
+                        }}
+                        transition={{ duration: 0.25 }}
+                        style={{
+                          position: 'absolute',
+                          width: '2px',
+                          height: '20px',
+                          backgroundColor: 'var(--foreground)',
+                          borderRadius: '1px',
+                        }}
+                      />
+                    </motion.div>
                   </div>
                   
                   <AnimatePresence>
@@ -159,10 +170,13 @@ export function FAQSection() {
                         style={{ overflow: 'hidden' }}
                       >
                         <p 
-                          className="text-lead"
                           style={{
-                            marginTop: '16px',
-                            marginBottom: 0,
+                            margin: 0,
+                            marginTop: '20px',
+                            paddingRight: isMobile ? 0 : '80px',
+                            fontSize: 'clamp(1rem, 1.4vw, 1.1rem)',
+                            lineHeight: 1.7,
+                            color: 'var(--foreground-muted)',
                           }}
                         >
                           {faq.answer}
@@ -170,12 +184,11 @@ export function FAQSection() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
-              </FadeIn>
+              </div>
             ))}
           </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

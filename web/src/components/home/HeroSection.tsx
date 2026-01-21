@@ -1,479 +1,455 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { ArrowRight, ArrowDown } from "lucide-react";
-import { HeroScene } from "@/components/three/HeroScene";
-import { useTheme } from "next-themes";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
-function AnimatedTitle({ children, delay = 0, accent = false }: { 
-  children: string; 
-  delay?: number;
-  accent?: boolean;
-}) {
-  return (
-    <div style={{ overflow: 'visible' }}>
-      <motion.div
-        initial={{ y: 40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 1, delay, ease: [0.16, 1, 0.3, 1] }}
-        style={{ 
-          fontSize: 'clamp(40px, 8vw, 72px)',
-          fontWeight: 700,
-          letterSpacing: '-0.02em',
-          lineHeight: 1.1,
-          color: accent ? 'var(--accent)' : 'var(--foreground)'
-        }}
-      >
-        {children}
-      </motion.div>
-    </div>
-  );
+function useCountUp(target: number, duration = 1200) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    let start: number | null = null;
+    let frameId: number;
+
+    const step = (timestamp: number) => {
+      if (start === null) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      setValue(Math.round(progress * target));
+      if (progress < 1) frameId = window.requestAnimationFrame(step);
+    };
+
+    frameId = window.requestAnimationFrame(step);
+    return () => window.cancelAnimationFrame(frameId);
+  }, [target, duration]);
+
+  return value;
 }
-
-// Simple gradient background - adds warm glow at bottom
-function GradientBackground({ isDark }: { isDark: boolean }) {
-  return (
-    <div style={{
-      position: 'absolute',
-      inset: 0,
-      overflow: 'hidden',
-      pointerEvents: 'none',
-      zIndex: 0,
-    }}>
-      {/* Main gradient - soft yellow/gold at bottom only */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: isDark
-            ? 'linear-gradient(180deg, transparent 0%, transparent 50%, rgba(255,176,0,0.12) 75%, rgba(255,160,0,0.2) 100%)'
-            : 'linear-gradient(180deg, transparent 0%, transparent 40%, rgba(255,200,100,0.3) 70%, rgba(255,180,80,0.5) 100%)',
-        }}
-      />
-    </div>
-  );
-}
-
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [isMobileHero, setIsMobileHero] = useState(false);
-  const [isSmallMobile, setIsSmallMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const statOfficial = useCountUp(100);
+  const statWarranty = useCountUp(10);
   
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Check for mobile hero layout (below 768px) and small mobile (below 580px)
-  useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobileHero(window.innerWidth < 768);
-      setIsSmallMobile(window.innerWidth < 580);
+      setIsMobile(window.innerWidth < 1024);
     };
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
-  
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 2;
-      const y = (e.clientY / window.innerHeight - 0.5) * 2;
-      setMousePosition({ x, y });
-    };
-    
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  const smoothX = useSpring(mousePosition.x, { stiffness: 30, damping: 20 });
-  const smoothY = useSpring(mousePosition.y, { stiffness: 30, damping: 20 });
-
-  const isDark = mounted && resolvedTheme === 'dark';
-
-  // Scroll-based animations for hero container
-  const heroContainerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress: heroScrollProgress } = useScroll({
-    target: heroContainerRef,
-    offset: ["start start", "end start"]
-  });
-
-  // Transform values based on scroll - only opacity, no scale to prevent object jumping
-  const heroOpacity = useTransform(heroScrollProgress, [0, 0.6], [1, 0]);
-
-  // Spring for smoother animations
-  const smoothOpacity = useSpring(heroOpacity, { stiffness: 100, damping: 30 });
 
   return (
     <section 
       ref={sectionRef}
       style={{ 
         position: 'relative',
+        minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        padding: '0 24px 24px 24px',
-        backgroundColor: 'var(--background)',
+        overflow: 'hidden',
       }}
     >
-      {/* Hero Container with scroll animations */}
-      <motion.div 
-        ref={heroContainerRef}
-        style={{
-          position: 'relative',
-          width: '100%',
-          maxWidth: '1366px',
-          borderRadius: '0 0 32px 32px',
-          overflow: 'hidden',
-          backgroundColor: isDark ? '#0a0a0a' : '#ffffff',
-          opacity: smoothOpacity,
-        }}>
-        {/* Warm yellow/gold gradient background - dark at top, warm at bottom */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 0,
-          background: isDark 
-            ? 'linear-gradient(180deg, #0a0a0a 0%, #141200 25%, #1f1c00 50%, #2a2600 75%, #3d3700 100%)'
-            : 'linear-gradient(180deg, #ffffff 0%, #FFFDF8 20%, #FFF9EE 40%, #FFF3DC 70%, #FFECC8 100%)',
-          pointerEvents: 'none',
-        }} />
+      {/* Background Image */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: 'url(/images/bg-hero-tesla.jpeg)',
+        backgroundSize: 'cover',
+        backgroundPosition: isMobile ? '50% center' : 'left center',
+        zIndex: 0,
+      }} />
+      
+      {/* Dark overlay for text readability */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: isMobile 
+          ? 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%)'
+          : 'linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%)',
+        zIndex: 1,
+      }} />
 
-        {/* Gradient Background */}
-        <GradientBackground isDark={isDark} />
-
-        {/* Subtle noise texture for depth */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 1,
-          opacity: isDark ? 0.03 : 0.02,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-          pointerEvents: 'none',
-          borderRadius: '32px',
-        }} />
-
-      {/* Large TESLA watermark text - Hidden for now
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 3,
-          pointerEvents: 'none',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <motion.span
-          animate={{
-            backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'linear',
-          }}
-          style={{
-            fontSize: '42vw',
-            fontWeight: 900,
-            letterSpacing: '0.02em',
-            textTransform: 'uppercase',
-            whiteSpace: 'nowrap',
-            background: isDark 
-              ? 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.03) 20%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.03) 80%, rgba(255,255,255,0) 100%)'
-              : 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 20%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.15) 80%, rgba(255,255,255,0) 100%)',
-            backgroundSize: '200% 100%',
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            color: 'transparent',
-            userSelect: 'none',
-          }}
-        >
-          TESLA
-        </motion.span>
-      </motion.div>
-      */}
-
-      {/* 3D Scene - Desktop: absolute positioned, Mobile: below content */}
-      {!isMobileHero && (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+      {/* Animated Certified Badge - Mobile only, top left */}
+      {isMobile && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.8, duration: 0.6 }}
           style={{
             position: 'absolute',
-            top: '-5%',
-            left: '22%',
-            right: '-10%',
-            bottom: '5%',
-            pointerEvents: 'none',
-            zIndex: 3,
+            top: '100px',
+            left: '24px',
+            zIndex: 20,
+            width: '70px',
+            height: '70px',
           }}
         >
-          <HeroScene />
+          {/* Rotating text circle */}
+          <motion.svg
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            viewBox="0 0 100 100"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+            }}
+          >
+            <defs>
+              <path
+                id="circlePathMobile"
+                d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
+              />
+            </defs>
+            <text
+              fill="rgba(255,255,255,0.7)"
+              fontSize="9"
+              fontWeight="500"
+              letterSpacing="0.12em"
+            >
+              <textPath href="#circlePathMobile">
+                СЕРТИФІКОВАНО • ОФІЦІЙНИЙ ПАРТНЕР • 
+              </textPath>
+            </text>
+          </motion.svg>
+          
+          {/* Center icon */}
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            backgroundColor: 'rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <svg 
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="rgba(255,255,255,0.9)" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/>
+            </svg>
+          </div>
         </motion.div>
       )}
 
-        {/* Main Content - Same width as header (1280px) */}
+      {/* Main Content */}
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        position: 'relative',
+        zIndex: 10,
+        padding: isMobile ? '120px 24px 60px' : '140px 0 80px',
+      }}>
         <div style={{
-          position: 'relative',
           width: '100%',
           maxWidth: '1280px',
           margin: '0 auto',
-          padding: isMobileHero 
-            ? '120px 24px 24px 24px' 
-            : 'clamp(120px, 20vw, 180px) clamp(16px, 4vw, 24px) clamp(32px, 6vw, 56px) clamp(16px, 4vw, 24px)',
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-end',
-          overflow: 'hidden',
-          borderRadius: isMobileHero ? '0 0 32px 32px' : '0',
+          padding: isMobile ? '0' : '0 48px',
         }}>
-          <div style={{ maxWidth: 'clamp(280px, 80vw, 520px)' }}>
-          {/* Badge - Glossy effect */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '12px 20px',
-              borderRadius: '100px',
-              border: `1px solid ${isDark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.9)'}`,
-              background: isDark 
-                ? 'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)'
-                : 'linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 100%)',
-              backdropFilter: 'blur(16px)',
-              boxShadow: isDark
-                ? '0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(0,0,0,0.1)'
-                : '0 4px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1), inset 0 -1px 0 rgba(0,0,0,0.03)',
-              marginBottom: '24px',
-              width: 'fit-content'
-            }}
-          >
-            <div style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: isDark ? '#00d4ff' : '#FFB000',
-              boxShadow: isDark ? '0 0 12px #00d4ff' : '0 0 12px rgba(255,176,0,0.6)'
-            }} />
-            <span style={{
-              fontSize: '12px',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--foreground)',
-              fontWeight: 500,
-              opacity: 0.8,
-            }}>
-              Офіційний імпортер Tesla Energy
-            </span>
-          </motion.div>
+          {/* Two column layout on desktop */}
+          <div style={{
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            justifyContent: 'space-between',
+            alignItems: isMobile ? 'flex-start' : 'flex-end',
+            gap: isMobile ? '40px' : '60px',
+          }}>
+            {/* Left column - Text content */}
+            <div style={{ maxWidth: isMobile ? '100%' : '600px' }}>
+              {/* Main Title - DM Serif Display */}
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                style={{
+                  fontFamily: 'var(--font-dm-serif), Georgia, "Times New Roman", serif',
+                  fontSize: isMobile ? 'clamp(32px, 9vw, 44px)' : 'clamp(44px, 4.5vw, 64px)',
+                  fontWeight: 400,
+                  letterSpacing: '-0.01em',
+                  lineHeight: 1.15,
+                  color: '#ffffff',
+                  marginBottom: '20px',
+                }}
+              >
+                Енергонезалежність для вашого дому та бізнесу.
+              </motion.h1>
 
-          {/* Title */}
-          <h1>
-            <AnimatedTitle delay={0.3}>Tesla Powerwall</AnimatedTitle>
-            <AnimatedTitle delay={0.4} accent={isDark}>& Megapack</AnimatedTitle>
-          </h1>
+              {/* Description - Inter clean sans */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                style={{
+                  fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+                  fontSize: isMobile ? '15px' : '17px',
+                  fontWeight: 400,
+                  lineHeight: 1.7,
+                  color: 'rgba(255,255,255,0.75)',
+                  maxWidth: '440px',
+                  marginBottom: '32px',
+                }}
+              >
+                Офіційний імпортер Tesla Energy в Україні. Системи накопичення енергії Powerwall та Megapack з повним інженерним супроводом.
+              </motion.p>
 
-          {/* Description */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-lead"
-            style={{
-              marginTop: '24px',
-              maxWidth: '480px'
-            }}
-          >
-            Для приватних будинків, бізнесу та інфраструктури. 
-            Офіційні поставки, інтеграція та супровід.
-          </motion.p>
+              {/* CTA Button Group - both react on hover */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="cta-group"
+                style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                onMouseEnter={(e) => {
+                  const btn = e.currentTarget.querySelector('.hero-cta-btn') as HTMLElement;
+                  const arrow = e.currentTarget.querySelector('.hero-cta-arrow') as HTMLElement;
+                  const arrowIcon = e.currentTarget.querySelector('.hero-cta-arrow svg') as HTMLElement;
+                  const span = e.currentTarget.querySelector('.hero-cta-btn span') as HTMLElement;
+                  if (btn) {
+                    btn.style.backgroundColor = 'transparent';
+                    btn.style.borderColor = '#ffffff';
+                  }
+                  if (span) span.style.color = '#ffffff';
+                  if (arrow) {
+                    arrow.style.backgroundColor = '#1d1d1f';
+                    arrow.style.borderColor = '#1d1d1f';
+                  }
+                  if (arrowIcon) arrowIcon.style.color = '#ffffff';
+                }}
+                onMouseLeave={(e) => {
+                  const btn = e.currentTarget.querySelector('.hero-cta-btn') as HTMLElement;
+                  const arrow = e.currentTarget.querySelector('.hero-cta-arrow') as HTMLElement;
+                  const arrowIcon = e.currentTarget.querySelector('.hero-cta-arrow svg') as HTMLElement;
+                  const span = e.currentTarget.querySelector('.hero-cta-btn span') as HTMLElement;
+                  if (btn) {
+                    btn.style.backgroundColor = '#ffffff';
+                    btn.style.borderColor = '#ffffff';
+                  }
+                  if (span) span.style.color = '#1d1d1f';
+                  if (arrow) {
+                    arrow.style.backgroundColor = '#1d1d1f';
+                    arrow.style.borderColor = '#ffffff';
+                  }
+                  if (arrowIcon) arrowIcon.style.color = '#ffffff';
+                }}
+              >
+                {/* White pill button */}
+                <div
+                  className="hero-cta-btn"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    height: '48px',
+                    padding: '0 24px',
+                    borderRadius: '100px',
+                    backgroundColor: '#ffffff',
+                    border: '2px solid #ffffff',
+                    transition: 'all 0.25s ease',
+                  }}
+                >
+                  <span style={{
+                    fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    letterSpacing: '0.01em',
+                    color: '#1d1d1f',
+                    transition: 'color 0.25s ease',
+                  }}>
+                    Замовити консультацію
+                  </span>
+                </div>
+                
+                {/* Dark circle arrow button */}
+                <div
+                  className="hero-cta-arrow"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '50%',
+                    backgroundColor: '#1d1d1f',
+                    border: '2px solid #ffffff',
+                    marginLeft: '1px',
+                    transition: 'all 0.25s ease',
+                  }}
+                >
+                  <ArrowRight style={{ 
+                    width: '18px', 
+                    height: '18px',
+                    color: '#ffffff',
+                    transform: 'rotate(-45deg)',
+                  }} />
+                </div>
+              </motion.div>
+            </div>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.8 }}
-            style={{
-              display: 'flex',
-              flexDirection: isSmallMobile ? 'column' : 'row',
-              flexWrap: 'wrap',
-              gap: '12px',
-              marginTop: '32px',
-              width: isSmallMobile ? '100%' : 'auto',
-            }}
-          >
-            <span 
-              style={{ 
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '12px',
-                padding: '14px 28px',
-                fontSize: '15px',
-                fontWeight: 600,
-                letterSpacing: '0.02em',
-                textDecoration: 'none',
-                borderRadius: '100px',
-                transition: 'all 0.3s ease',
-                backgroundColor: 'var(--foreground)',
-                color: 'var(--background)',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-                cursor: 'default',
-                width: isSmallMobile ? '100%' : 'auto',
-              }}
-            >
-              <span>Запросити дзвінок</span>
-              <ArrowRight style={{ width: '16px', height: '16px' }} />
-            </span>
-            <span 
-              style={{ 
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                padding: '14px 28px',
-                fontSize: '15px',
-                fontWeight: 500,
-                letterSpacing: '0.02em',
-                textDecoration: 'none',
-                borderRadius: '100px',
-                transition: 'all 0.3s ease',
-                color: 'var(--foreground)',
-                border: `1px solid ${isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.12)'}`,
-                backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.6)',
-                backdropFilter: 'blur(10px)',
-                cursor: 'default',
-                width: isSmallMobile ? '100%' : 'auto',
-              }}
-            >
-              Дізнатись більше
-            </span>
-          </motion.div>
-        </div>
-
-        {/* 3D Scene - Mobile only: below buttons */}
-        {isMobileHero && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              position: 'relative',
-              width: 'calc(100% + 120px)',
-              marginLeft: '-100px',
-              marginRight: '-20px',
-              height: '380px',
-              pointerEvents: 'none',
-              zIndex: 3,
-              marginTop: '-40px',
-              marginBottom: '-56px',
-            }}
-          >
-            <HeroScene isMobile={true} />
-          </motion.div>
-        )}
-          
-        {/* Scroll Badge - Aligned with content - hidden on mobile */}
-        <motion.div 
-          className="hide-mobile"
-          style={{
-            position: 'absolute',
-            bottom: 'clamp(24px, 5vw, 56px)',
-            right: 'clamp(24px, 5vw, 56px)',
-            zIndex: 20,
-            cursor: 'pointer',
-          }}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1.5, duration: 0.6 }}
-          whileHover={{ scale: 1.05 }}
-        >
-          {/* Rotating text ring */}
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            style={{
-              position: 'relative',
-              width: '80px',
-              height: '80px',
-            }}
-          >
-            <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%' }}>
-              <defs>
-                <path
-                  id="scrollCirclePath"
-                  d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
-                />
-              </defs>
-              <text style={{ 
-                fill: 'var(--foreground)', 
-                fontSize: '10px', 
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                fontWeight: 500,
-                opacity: 0.5
-              }}>
-                <textPath href="#scrollCirclePath">
-                  ГОРТАЙ • ГОРТАЙ • ГОРТАЙ • ГОРТАЙ •
-                </textPath>
-              </text>
-            </svg>
-          </motion.div>
-          
-          {/* Center arrow */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+            {/* Right column - Stats + Certified Badge */}
             <motion.div
-              animate={{ y: [0, 3, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                display: isMobile ? 'grid' : 'flex',
+                gridTemplateColumns: isMobile ? '1fr 1fr' : 'none',
+                alignItems: isMobile ? 'start' : 'flex-end',
+                gap: isMobile ? '24px' : '48px',
+                width: isMobile ? '100%' : 'auto',
               }}
             >
-              <ArrowDown style={{ 
-                width: '14px', 
-                height: '14px', 
-                color: 'var(--foreground)', 
-                opacity: 0.6 
-              }} />
+              {/* Animated Certified Badge - hidden on mobile */}
+              {!isMobile && (
+                <div style={{
+                  position: 'relative',
+                  width: '100px',
+                  height: '100px',
+                }}>
+                  {/* Rotating text circle */}
+                  <motion.svg
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    viewBox="0 0 100 100"
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      width: '100%',
+                      height: '100%',
+                    }}
+                  >
+                    <defs>
+                      <path
+                        id="circlePath"
+                        d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
+                      />
+                    </defs>
+                    <text
+                      fill="rgba(255,255,255,0.7)"
+                      fontSize="9"
+                      fontWeight="500"
+                      letterSpacing="0.12em"
+                    >
+                      <textPath href="#circlePath">
+                        СЕРТИФІКОВАНО • ОФІЦІЙНИЙ ПАРТНЕР • 
+                      </textPath>
+                    </text>
+                  </motion.svg>
+                  
+                  {/* Center icon */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <svg 
+                      width="22" 
+                      height="22" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="rgba(255,255,255,0.9)" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/>
+                    </svg>
+                  </div>
+                </div>
+              )}
+
+              {/* Stat 1 - Official equipment */}
+              <div>
+                <div style={{
+                  fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+                  fontSize: isMobile ? '40px' : '56px',
+                  fontWeight: 700,
+                  color: '#ffffff',
+                  lineHeight: 1,
+                  letterSpacing: '-0.02em',
+                  marginBottom: '8px',
+                  display: 'flex',
+                  alignItems: 'baseline',
+                }}>
+                  <span>{statOfficial}</span>
+                  <span style={{ 
+                    fontSize: '0.5em',
+                    fontWeight: 500,
+                    opacity: 0.6,
+                    marginLeft: '2px',
+                  }}>%</span>
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+                  fontSize: isMobile ? '12px' : '13px',
+                  color: 'rgba(255,255,255,0.6)',
+                  fontWeight: 500,
+                  letterSpacing: '0.01em',
+                }}>
+                  Офіційне обладнання
+                </div>
+              </div>
+
+              {/* Stat 2 - Warranty */}
+              <div>
+                <div style={{
+                  fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+                  fontSize: isMobile ? '40px' : '56px',
+                  fontWeight: 700,
+                  color: '#ffffff',
+                  lineHeight: 1,
+                  letterSpacing: '-0.02em',
+                  marginBottom: '8px',
+                  display: 'flex',
+                  alignItems: 'baseline',
+                }}>
+                  <span>{statWarranty}</span>
+                  <span style={{ 
+                    fontSize: '0.5em',
+                    fontWeight: 500,
+                    opacity: 0.6,
+                    marginLeft: '2px',
+                  }}>+</span>
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+                  fontSize: isMobile ? '12px' : '13px',
+                  color: 'rgba(255,255,255,0.6)',
+                  fontWeight: 500,
+                  letterSpacing: '0.01em',
+                }}>
+                  Років гарантії
+                </div>
+              </div>
             </motion.div>
           </div>
-        </motion.div>
+        </div>
       </div>
-      </motion.div>
     </section>
   );
 }

@@ -1,9 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowUpRight, ArrowRight } from "lucide-react";
-import { useTheme } from "next-themes";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const footerLinks = [
@@ -15,80 +13,80 @@ const footerLinks = [
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
-
-  const isDark = mounted && resolvedTheme === 'dark';
 
   return (
     <footer 
       style={{
-        padding: 'clamp(48px, 8vw, 80px) 0 0 0',
+        position: 'relative',
         backgroundColor: 'var(--background)',
+        overflow: 'hidden',
+        borderTop: '1px solid var(--divider)',
       }}
     >
+      {/* Large background text - full width to container edges */}
+      <div style={{
+        position: 'absolute',
+        bottom: isMobile ? '20px' : '30px',
+        left: isMobile ? '24px' : '48px',
+        right: isMobile ? '24px' : '48px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        fontSize: isMobile ? '11vw' : 'clamp(100px, 10vw, 140px)',
+        fontWeight: 800,
+        letterSpacing: isMobile ? '0' : '0.2em',
+        color: 'rgba(0,0,0,0.03)',
+        pointerEvents: 'none',
+        userSelect: 'none',
+      }}>
+        {'STEVARA'.split('').map((letter, i) => (
+          <span key={i} style={{ flex: 1, textAlign: 'center' }}>{letter}</span>
+        ))}
+      </div>
+
       <div style={{
         width: '100%',
         maxWidth: '1280px',
         margin: '0 auto',
-        padding: '0 clamp(16px, 4vw, 24px)',
+        padding: isMobile ? '60px 24px 32px' : '100px 48px 48px',
+        position: 'relative',
+        zIndex: 10,
       }}>
-        {/* Top divider line with animation */}
-        <motion.div 
-          initial={{ width: 0 }}
-          whileInView={{ width: '100%' }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            height: '2px',
-            backgroundColor: 'var(--foreground)',
-            marginBottom: 'clamp(40px, 8vw, 80px)',
-          }} 
-        />
-
-        {/* Main Content - Two columns on desktop, stacked on mobile */}
-        <div className="grid-responsive-2" style={{ marginBottom: 'clamp(60px, 10vw, 100px)' }}>
+        {/* Main Content */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+          gap: isMobile ? '48px' : 'clamp(60px, 10vw, 120px)',
+          marginBottom: isMobile ? '60px' : '120px',
+        }}>
           {/* Left - Brand & CTA */}
           <div>
-            <motion.div
+            <motion.span
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
+              style={{
+                display: 'inline-block',
+                fontSize: '12px',
+                fontWeight: 600,
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: 'var(--foreground-muted)',
+                marginBottom: '32px',
+              }}
             >
-              <span 
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  marginBottom: 'clamp(24px, 4vw, 40px)',
-                  textDecoration: 'none',
-                  cursor: 'default',
-                }}
-              >
-                <div style={{ position: 'relative', width: '32px', height: '32px' }}>
-                  <Image 
-                    src="/images/logo.svg" 
-                    alt="STEVARA Logo" 
-                    fill
-                    style={{ objectFit: 'contain' }}
-                  />
-                </div>
-                <span style={{
-                  color: 'var(--foreground)',
-                  fontSize: '16px',
-                  fontWeight: 600,
-                  letterSpacing: '0.15em',
-                  textTransform: 'uppercase'
-                }}>
-                  STEVARA
-                </span>
-              </span>
-            </motion.div>
+              Контакт
+            </motion.span>
             
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
@@ -97,47 +95,109 @@ export function Footer() {
               transition={{ duration: 0.8, delay: 0.1 }}
               style={{
                 color: 'var(--foreground)',
-                fontSize: 'clamp(28px, 5vw, 48px)',
-                fontWeight: 700,
-                lineHeight: 1.1,
-                letterSpacing: '-0.02em',
-                marginBottom: 'clamp(24px, 4vw, 40px)',
-                maxWidth: '400px',
+                marginBottom: '40px',
+                maxWidth: '500px',
               }}
             >
-              Готові почати свій проєкт?
+              Готові до{' '}
+              <span style={{ color: 'var(--foreground-muted)' }}>
+                енергонезалежності?
+              </span>
             </motion.h2>
 
+            {/* CTA Button - Hero style */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
+              className="footer-cta-group"
+              style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', width: 'fit-content' }}
+              onMouseEnter={(e) => {
+                const btn = e.currentTarget.querySelector('.footer-cta-btn') as HTMLElement;
+                const arrow = e.currentTarget.querySelector('.footer-cta-arrow') as HTMLElement;
+                const arrowIcon = e.currentTarget.querySelector('.footer-cta-arrow svg') as HTMLElement;
+                const span = e.currentTarget.querySelector('.footer-cta-btn span') as HTMLElement;
+                if (btn) {
+                  btn.style.backgroundColor = 'transparent';
+                  btn.style.borderColor = 'var(--foreground)';
+                }
+                if (span) span.style.color = 'var(--foreground)';
+                if (arrow) {
+                  arrow.style.backgroundColor = 'var(--foreground)';
+                  arrow.style.borderColor = 'var(--foreground)';
+                }
+                if (arrowIcon) arrowIcon.style.color = 'var(--background)';
+              }}
+              onMouseLeave={(e) => {
+                const btn = e.currentTarget.querySelector('.footer-cta-btn') as HTMLElement;
+                const arrow = e.currentTarget.querySelector('.footer-cta-arrow') as HTMLElement;
+                const arrowIcon = e.currentTarget.querySelector('.footer-cta-arrow svg') as HTMLElement;
+                const span = e.currentTarget.querySelector('.footer-cta-btn span') as HTMLElement;
+                if (btn) {
+                  btn.style.backgroundColor = 'var(--foreground)';
+                  btn.style.borderColor = 'var(--foreground)';
+                }
+                if (span) span.style.color = 'var(--background)';
+                if (arrow) {
+                  arrow.style.backgroundColor = 'var(--background)';
+                  arrow.style.borderColor = 'var(--foreground)';
+                }
+                if (arrowIcon) arrowIcon.style.color = 'var(--foreground)';
+              }}
             >
-              <span 
+              <div
+                className="footer-cta-btn"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '10px',
-                  padding: 'clamp(14px, 2vw, 18px) clamp(24px, 4vw, 32px)',
-                  fontSize: 'clamp(14px, 1.5vw, 16px)',
-                  fontWeight: 600,
-                  letterSpacing: '0.02em',
-                  textDecoration: 'none',
+                  height: '52px',
+                  padding: '0 28px',
                   borderRadius: '100px',
                   backgroundColor: 'var(--foreground)',
-                  color: 'var(--background)',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-                  cursor: 'default',
+                  border: '2px solid var(--foreground)',
+                  transition: 'all 0.25s ease',
                 }}
               >
-                Зв'язатися з нами
-                <ArrowUpRight style={{ width: '18px', height: '18px' }} />
-              </span>
+                <span style={{
+                  fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  letterSpacing: '0.01em',
+                  color: 'var(--background)',
+                  transition: 'color 0.25s ease',
+                }}>
+                  Зв'язатися з нами
+                </span>
+              </div>
+              
+              <div
+                className="footer-cta-arrow"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '52px',
+                  height: '52px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--background)',
+                  border: '2px solid var(--foreground)',
+                  marginLeft: '1px',
+                  transition: 'all 0.25s ease',
+                }}
+              >
+                <ArrowRight style={{ 
+                  width: '18px', 
+                  height: '18px',
+                  color: 'var(--foreground)',
+                  transform: 'rotate(-45deg)',
+                  transition: 'color 0.25s ease',
+                }} />
+              </div>
             </motion.div>
           </div>
 
-          {/* Right - Links with arrows */}
+          {/* Right - Minimal links */}
           <div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -146,127 +206,114 @@ export function Footer() {
             <nav style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '0',
             }}>
               {footerLinks.map((link, index) => (
-                <motion.div
+                <motion.a
                   key={link.href}
+                  href={link.href}
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.1 + index * 0.05 }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '20px 0',
+                    borderBottom: '1px solid var(--divider)',
+                    color: 'var(--foreground)',
+                    fontSize: '16px',
+                    fontWeight: 500,
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.paddingLeft = '12px';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.paddingLeft = '0';
+                  }}
                 >
-                  <span 
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: 'clamp(14px, 2vw, 20px) 0',
-                      borderBottom: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
-                      color: 'var(--foreground)',
-                      fontSize: 'clamp(16px, 1.5vw, 18px)',
-                      fontWeight: 500,
-                      textDecoration: 'none',
-                      cursor: 'default',
-                    }}
-                  >
-                    {link.label}
-                    <ArrowRight style={{ 
-                      width: '16px', 
-                      height: '16px',
-                      opacity: 0.4,
-                    }} />
-                  </span>
-                </motion.div>
+                  {link.label}
+                  <ArrowRight style={{ 
+                    width: '16px', 
+                    height: '16px',
+                    opacity: 0.4,
+                    transform: 'rotate(-45deg)',
+                  }} />
+                </motion.a>
               ))}
             </nav>
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Bottom Bar - Minimal */}
         <motion.div 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="footer-bottom-bar"
           style={{
             display: 'flex',
-            flexWrap: 'wrap',
+            flexDirection: isMobile ? 'column' : 'row',
             justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: '16px',
-            paddingTop: '24px',
-            paddingBottom: '32px',
-            borderTop: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
+            alignItems: isMobile ? 'flex-start' : 'center',
+            gap: '24px',
+            paddingTop: '32px',
+            borderTop: '1px solid var(--divider)',
           }}
         >
-          {/* Left - copyright and location */}
+          {/* Left */}
           <div style={{
             display: 'flex',
-            flexWrap: 'wrap',
             alignItems: 'center',
-            gap: '12px',
+            gap: '32px',
           }}>
-            <p style={{ 
-              fontSize: '13px', 
-              color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
-              margin: 0,
+            <span style={{
+              fontSize: '14px',
+              fontWeight: 600,
+              letterSpacing: '0.15em',
+              color: 'var(--foreground)',
             }}>
-              © {currentYear} STEVARA
-            </p>
-            <span className="hide-mobile" style={{
-              width: '4px',
-              height: '4px',
-              borderRadius: '50%',
-              backgroundColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)',
-            }} />
-            <p style={{ 
+              STEVARA
+            </span>
+            <span style={{ 
               fontSize: '13px', 
-              color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
-              margin: 0,
+              color: 'var(--foreground-muted)',
             }}>
-              Працюємо по всій Україні
-            </p>
+              © {currentYear}
+            </span>
           </div>
           
           {/* Right - contacts */}
           <div style={{ 
             display: 'flex', 
-            flexWrap: 'wrap',
             alignItems: 'center', 
-            gap: '16px' 
+            gap: '32px',
           }}>
             <a 
               href="mailto:info@stevara.ua" 
               style={{
                 fontSize: '13px',
-                color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
+                color: 'var(--foreground-muted)',
                 textDecoration: 'none',
                 transition: 'color 0.2s ease',
-                fontWeight: 500,
               }}
-              onMouseEnter={(e) => e.currentTarget.style.color = isDark ? '#ffffff' : '#000000'}
-              onMouseLeave={(e) => e.currentTarget.style.color = isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--foreground)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--foreground-muted)'}
             >
               info@stevara.ua
             </a>
-            <span className="hide-mobile" style={{
-              width: '1px',
-              height: '12px',
-              backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
-            }} />
             <a 
               href="tel:+380441234567" 
               style={{
                 fontSize: '13px',
-                color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
+                color: 'var(--foreground-muted)',
                 textDecoration: 'none',
                 transition: 'color 0.2s ease',
-                fontWeight: 500,
               }}
-              onMouseEnter={(e) => e.currentTarget.style.color = isDark ? '#ffffff' : '#000000'}
-              onMouseLeave={(e) => e.currentTarget.style.color = isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--foreground)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--foreground-muted)'}
             >
               +380 (44) 123-45-67
             </a>

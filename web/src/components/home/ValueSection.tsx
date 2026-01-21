@@ -1,152 +1,167 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { Check } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
+import { motion, useInView } from "framer-motion";
 
 const valuePoints = [
-  "Інтеграція в електромережу вашого об'єкта, під ваші реальні умови",
-  "Налаштування логіки роботи — система працює так, як потрібно вам",
-  "Після запуску ви не залишаєтесь самі, ми на зв'язку",
+  {
+    number: "01",
+    title: "Інтеграція",
+    description: "Підключення в електромережу вашого об'єкта під ваші реальні умови",
+  },
+  {
+    number: "02", 
+    title: "Налаштування",
+    description: "Система працює так, як потрібно саме вам — логіка роботи під ваші задачі",
+  },
+  {
+    number: "03",
+    title: "Підтримка",
+    description: "Після запуску ви не залишаєтесь самі — ми завжди на зв'язку",
+  },
 ];
 
-export function ValueSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
+function FadeIn({
+  children,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+}) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const smoothOpacity = useSpring(opacity, { stiffness: 100, damping: 30 });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+export function ValueSection() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   return (
     <section 
-      ref={sectionRef}
       className="section-padding"
       style={{ 
         position: 'relative',
         backgroundColor: 'var(--background)',
+        borderTop: '1px solid var(--divider)',
       }}
     >
-      {/* Container */}
-      <motion.div 
+      <div 
         style={{ 
-          opacity: smoothOpacity,
           width: '100%',
           maxWidth: '1280px',
           margin: '0 auto',
-          padding: '0 24px',
+          padding: '0 clamp(24px, 4vw, 48px)',
         }}
       >
-        {/* Header */}
-        <div 
-          className="grid-responsive-12"
-          style={{ marginBottom: '48px' }}
-        >
-          {/* Left - Title */}
-          <div className="lg-col-span-7">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              style={{ marginBottom: '24px' }}
-            >
-              <span className="text-label">Наш підхід</span>
-            </motion.div>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-            >
-              Одна команда —<br />
-              відповідальність за результат
-            </motion.h2>
-          </div>
-
-          {/* Right - Description */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="lg-col-span-5"
-            style={{
-              display: 'flex',
-              alignItems: 'flex-end',
-              paddingBottom: '8px',
-            }}
-          >
-            <p className="text-lead" style={{ margin: 0 }}>
-              Ми не передаємо проєкт між підрядниками. Від першої розмови до стабільної роботи відповідає одна команда.
-            </p>
-          </motion.div>
-        </div>
-
-        {/* Value Points - full width with lines */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          style={{
-            height: '2px',
-            backgroundColor: 'var(--foreground)',
-            opacity: 0.15,
-            transformOrigin: 'left',
-          }}
-        />
-        
-        {valuePoints.map((point, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 + index * 0.1 }}
-          >
-            <div 
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '16px',
-                padding: '24px 0',
-                borderBottom: '2px solid',
-                borderColor: 'rgba(128,128,128,0.15)',
+        {/* Header - Centered */}
+        <div style={{ 
+          textAlign: 'center',
+          maxWidth: '800px',
+          margin: '0 auto',
+          marginBottom: 'clamp(60px, 10vw, 100px)',
+        }}>
+          <FadeIn>
+            <span className="text-label" style={{ marginBottom: '20px' }}>
+              Наш підхід
+            </span>
+          </FadeIn>
+          
+          <FadeIn delay={0.1}>
+            <h2 style={{ marginBottom: '24px' }}>
+              Одна команда — повна відповідальність
+            </h2>
+          </FadeIn>
+          
+          <FadeIn delay={0.2}>
+            <p 
+              className="text-lead" 
+              style={{ 
+                margin: 0,
+                maxWidth: '600px',
+                marginLeft: 'auto',
+                marginRight: 'auto',
               }}
             >
-              {/* Check icon */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '28px',
-                height: '28px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--brand-orange)',
-                flexShrink: 0,
-                marginTop: '2px',
-              }}>
-                <Check style={{ 
-                  width: '16px', 
-                  height: '16px', 
-                  color: '#000',
-                  strokeWidth: 3,
-                }} />
+              Від першої розмови до стабільної роботи — весь проєкт веде одна команда
+            </p>
+          </FadeIn>
+        </div>
+
+        {/* Value Points - Horizontal layout */}
+        <div 
+          style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+            gap: '1px',
+            backgroundColor: 'var(--divider)',
+          }}
+        >
+          {valuePoints.map((point, index) => (
+            <FadeIn key={point.number} delay={0.2 + index * 0.1}>
+              <div
+                style={{
+                  backgroundColor: 'var(--background)',
+                  padding: isMobile ? '32px 0' : 'clamp(32px, 5vw, 48px)',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px',
+                }}
+              >
+                {/* Number */}
+                <span
+                  style={{
+                    fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+                    fontSize: isMobile ? '48px' : 'clamp(48px, 6vw, 72px)',
+                    fontWeight: 200,
+                    lineHeight: 1,
+                    color: 'var(--foreground)',
+                    opacity: 0.12,
+                  }}
+                >
+                  {point.number}
+                </span>
+                
+                {/* Title */}
+                <h4 style={{ margin: 0 }}>
+                  {point.title}
+                </h4>
+                
+                {/* Description */}
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 'clamp(0.95rem, 1.3vw, 1.05rem)',
+                    lineHeight: 1.6,
+                    color: 'var(--foreground-muted)',
+                  }}
+                >
+                  {point.description}
+                </p>
               </div>
-              
-              {/* Text */}
-              <p className="text-large" style={{ margin: 0 }}>
-                {point}
-              </p>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
