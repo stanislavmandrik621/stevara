@@ -12,7 +12,7 @@ const products = [
     description:
       "Стабільна робота незалежно від стану мережі та резерв під час відключень.",
     buttonText: "Дізнатись більше",
-    image: "/images/powerwall-house.jpeg",
+    image: "/images/powerwall-private-home.jpg",
   },
   {
     label: "Megapack",
@@ -211,7 +211,7 @@ function ProductBlock({
           width: "100%",
           maxWidth: "1280px",
           margin: "0 auto",
-          padding: "0 24px",
+          padding: isMobile ? "0 24px" : "0 48px",
         }}
       >
         <div

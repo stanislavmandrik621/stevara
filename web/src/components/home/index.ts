@@ -1,11 +1,17 @@
 export { HeroSection } from './HeroSection';
 export { IntroSection } from './IntroSection';
 export { OfficialHighlightsSection } from './OfficialHighlightsSection';
+export { BlackoutDemoSection } from './BlackoutDemoSection';
+export { TechSpecsSection } from './TechSpecsSection';
+export { TeslaAppPreviewSection } from './TeslaAppPreviewSection';
 export { EnergyBenefitsSection } from './EnergyBenefitsSection';
 export { DirectionsSection } from './DirectionsSection';
 export { ValueSection } from './ValueSection';
 export { ImageBreakSection } from './ImageBreakSection';
 export { TrustSection } from './TrustSection';
+export { InstallationProcessSection } from './InstallationProcessSection';
+export { CasesSection } from './CasesSection';
 export { SupportSection } from './SupportSection';
+export { FinancingTeaserSection } from './FinancingTeaserSection';
 export { FAQSection } from './FAQSection';
 export { CTASection } from './CTASection';

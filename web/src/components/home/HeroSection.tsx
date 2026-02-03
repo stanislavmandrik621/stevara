@@ -56,9 +56,9 @@ export function HeroSection() {
       <div style={{
         position: 'absolute',
         inset: 0,
-        backgroundImage: 'url(/images/bg-hero-tesla.jpeg)',
+        backgroundImage: 'url(/images/powerwall-hero.jpg)',
         backgroundSize: 'cover',
-        backgroundPosition: isMobile ? '50% center' : 'left center',
+        backgroundPosition: isMobile ? '35% center' : 'center center',
         zIndex: 0,
       }} />
       

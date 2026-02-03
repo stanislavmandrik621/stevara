@@ -64,7 +64,7 @@ export function Footer() {
         {/* Main Content */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+          gridTemplateColumns: isMobile ? '1fr' : '1fr 1.2fr',
           gap: isMobile ? '48px' : 'clamp(60px, 10vw, 120px)',
           marginBottom: isMobile ? '60px' : '120px',
         }}>

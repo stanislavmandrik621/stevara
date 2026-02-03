@@ -12,12 +12,12 @@ const supportFeatures = [
   {
     icon: Activity,
     title: "Моніторинг 24/7",
-    description: "Автоматичне відстеження стану системи в реальному часі",
+    description: "Автоматичне відстеження стану системи в реальному часі. Якщо щось не так — знаємо раніше за вас",
   },
   {
     icon: MessageCircle,
     title: "Консультації",
-    description: "Експертна допомога у нестандартних ситуаціях",
+    description: "Експертна допомога у нестандартних ситуаціях чи потребі масштабування",
   },
   {
     icon: Calendar,
@@ -76,7 +76,7 @@ export function SupportSection() {
                 color: '#ffffff',
                 marginBottom: '0',
               }}>
-                Система під контролем — завжди
+                Система під наглядом — завжди
               </h2>
             </>
           )}
@@ -115,7 +115,7 @@ export function SupportSection() {
                 color: '#ffffff',
                 marginBottom: '24px',
               }}>
-                Система під контролем — завжди
+                Система під наглядом — завжди
               </h2>
               
               <p 
