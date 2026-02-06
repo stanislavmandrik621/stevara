@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 
 const footerLinks = [
   { label: "Powerwall", href: "/powerwall" },
@@ -14,6 +16,14 @@ const footerLinks = [
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const [isMobile, setIsMobile] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted && resolvedTheme === 'dark';
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -269,14 +279,16 @@ export function Footer() {
             alignItems: 'center',
             gap: '32px',
           }}>
-            <span style={{
-              fontSize: '14px',
-              fontWeight: 600,
-              letterSpacing: '0.15em',
-              color: 'var(--foreground)',
-            }}>
-              STEVARA
-            </span>
+            <Image
+              src={isDark ? "/images/logo-white.svg" : "/images/logo-black.svg"}
+              alt="STEVARA"
+              width={100}
+              height={14}
+              style={{
+                height: '14px',
+                width: 'auto',
+              }}
+            />
             <span style={{ 
               fontSize: '13px', 
               color: 'var(--foreground-muted)',

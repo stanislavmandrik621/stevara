@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
@@ -13,7 +14,6 @@ const navLinks = [
   { href: "/", label: "Головна" },
   { href: "/about", label: "Про нас" },
   { href: "/powerwall", label: "Powerwall" },
-  { href: "/megapack", label: "Megapack" },
   { href: "/contacts", label: "Контакти" },
 ];
 
@@ -116,27 +116,42 @@ export function Navbar() {
               justifyContent: 'space-between',
             }}
           >
-            {/* Logo - just text */}
+            {/* Logo SVG */}
             <Link 
               href="/"
               style={{
                 textDecoration: 'none',
                 cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
               }}
             >
-              <span style={{
-                fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
-                color: isScrolled 
-                  ? 'var(--foreground)' 
-                  : '#ffffff',
-                fontSize: '15px',
-                fontWeight: 600,
-                letterSpacing: '0.25em',
-                textTransform: 'uppercase',
-                transition: 'color 0.3s ease',
-              }}>
-                STEVARA
-              </span>
+              {/* White logo - visible on hero (not scrolled) or dark mode scrolled */}
+              <Image
+                src="/images/logo-white.svg"
+                alt="STEVARA"
+                width={120}
+                height={17}
+                priority
+                style={{
+                  display: (!isScrolled || (isScrolled && isDark)) ? 'block' : 'none',
+                  height: '17px',
+                  width: 'auto',
+                }}
+              />
+              {/* Black logo - visible when scrolled in light mode */}
+              <Image
+                src="/images/logo-black.svg"
+                alt="STEVARA"
+                width={120}
+                height={17}
+                priority
+                style={{
+                  display: (isScrolled && !isDark) ? 'block' : 'none',
+                  height: '17px',
+                  width: 'auto',
+                }}
+              />
             </Link>
 
             {/* Center nav links - Desktop */}

@@ -8,8 +8,6 @@ import {
   DirectionsSection,
   ValueSection,
   InstallationProcessSection,
-  ImageBreakSection,
-  TrustSection,
   CasesSection,
   SupportSection,
   FinancingTeaserSection,
@@ -23,19 +21,19 @@ export default function HomePage() {
       {/* Section 1: Hero - First impression */}
       <HeroSection />
       
-      {/* Section 2: Official Tesla highlights - 6 cards */}
+      {/* Section 2: Powerwall features */}
       <OfficialHighlightsSection />
       
-      {/* Section 3: Blackout demo - Main selling point for Ukraine */}
+      {/* Section 3: Blackout demo - Main selling point */}
       <BlackoutDemoSection />
       
-      {/* Section 4: Tech specs - 13.5 kWh, 11.5 kW, <20ms, 97.5% */}
+      {/* Section 4: Tech specs teaser */}
       <TechSpecsSection />
       
-      {/* Section 5: Tesla App preview - Control in your phone */}
+      {/* Section 4: Tesla App preview */}
       <TeslaAppPreviewSection />
       
-      {/* Section 6: Energy benefits - 3 key benefits */}
+      {/* Section 5: Energy benefits */}
       <EnergyBenefitsSection />
       
       {/* Section 7: Directions - Powerwall / Megapack */}
@@ -46,12 +44,6 @@ export default function HomePage() {
       
       {/* Section 9: Installation process - 5 steps */}
       <InstallationProcessSection />
-      
-      {/* Section 10: Visual break - Quote with video */}
-      <ImageBreakSection />
-      
-      {/* Section 11: Trust - Why trust us */}
-      <TrustSection />
       
       {/* Section 12: Cases - Installation examples */}
       <CasesSection />

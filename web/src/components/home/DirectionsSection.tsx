@@ -14,14 +14,6 @@ const products = [
     buttonText: "Дізнатись більше",
     image: "/images/powerwall-private-home.jpg",
   },
-  {
-    label: "Megapack",
-    title: "Для бізнесу та інфраструктури",
-    description:
-      "Надійність, інтеграція з мережею та передбачувана експлуатація.",
-    buttonText: "Обговорити проєкт",
-    image: "/images/megapack.avif",
-  },
 ];
 
 function FadeIn({

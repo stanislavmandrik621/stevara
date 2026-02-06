@@ -175,6 +175,25 @@ export function HeroSection() {
             {/* Left column - Text content */}
             <div style={{ maxWidth: isMobile ? '100%' : '600px' }}>
               {/* Main Title - DM Serif Display */}
+              {/* Subtitle - Tesla Powerwall */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.15 }}
+                style={{
+                  fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+                  fontSize: isMobile ? '13px' : '14px',
+                  fontWeight: 600,
+                  letterSpacing: '0.15em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.6)',
+                  marginBottom: '16px',
+                }}
+              >
+                Tesla Powerwall
+              </motion.p>
+
+              {/* Main Title */}
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -189,25 +208,43 @@ export function HeroSection() {
                   marginBottom: '20px',
                 }}
               >
-                Енергонезалежність для вашого дому та бізнесу.
+                Передбачувана енергія
               </motion.h1>
 
-              {/* Description - Inter clean sans */}
+              {/* Description */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
+                transition={{ duration: 0.6, delay: 0.35 }}
                 style={{
                   fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
                   fontSize: isMobile ? '15px' : '17px',
                   fontWeight: 400,
                   lineHeight: 1.7,
                   color: 'rgba(255,255,255,0.75)',
-                  maxWidth: '440px',
+                  maxWidth: '480px',
+                  marginBottom: '12px',
+                }}
+              >
+                Інтегрована система збереження енергії з автоматичним резервом і безперервною роботою
+              </motion.p>
+
+              {/* STEVARA line */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.45 }}
+                style={{
+                  fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+                  fontSize: isMobile ? '13px' : '14px',
+                  fontWeight: 400,
+                  lineHeight: 1.6,
+                  color: 'rgba(255,255,255,0.55)',
+                  maxWidth: '480px',
                   marginBottom: '32px',
                 }}
               >
-                Офіційний імпортер Tesla Energy в Україні. Системи накопичення енергії Powerwall та Megapack з повним інженерним супроводом.
+                <span style={{ fontWeight: 600, color: 'rgba(255,255,255,0.8)' }}>STEVARA</span> — офіційне постачання, інженерне впровадження та супровід Powerwall в Україні.
               </motion.p>
 
               {/* CTA Button Group - both react on hover */}
@@ -273,7 +310,7 @@ export function HeroSection() {
                     color: '#1d1d1f',
                     transition: 'color 0.25s ease',
                   }}>
-                    Замовити консультацію
+                    Запланувати дзвінок
                   </span>
                 </div>
                 

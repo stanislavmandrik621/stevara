@@ -3,43 +3,36 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import {
-  MessageSquare,
-  FileText,
-  Wrench,
-  Play,
+  FileSearch,
+  Plug,
+  Settings,
   HeadphonesIcon,
 } from "lucide-react";
 
 const steps = [
   {
-    number: "01",
-    icon: MessageSquare,
-    title: "Консультація",
-    description: "Розмова з інженером про ваш об'єкт та потреби",
+    icon: FileSearch,
+    title: "Проєктування",
+    description:
+      "Аналіз об'єкта: фази, потужності, критичні навантаження. Визначення конфігурації системи.",
   },
   {
-    number: "02",
-    icon: FileText,
-    title: "Проєкт",
-    description: "Аналіз, конфігурація та технічне рішення",
+    icon: Plug,
+    title: "Інтеграція",
+    description:
+      "Інтеграція в електросистему об'єкта з урахуванням її параметрів. Та сама команда, що проєктувала.",
   },
   {
-    number: "03",
-    icon: Wrench,
-    title: "Монтаж",
-    description: "Професійне встановлення сертифікованою командою",
+    icon: Settings,
+    title: "Налаштування і запуск",
+    description:
+      "Режими роботи, пріоритети живлення, логіка системи. Перевірка в реальних умовах.",
   },
   {
-    number: "04",
-    icon: Play,
-    title: "Запуск",
-    description: "Налаштування режимів та перевірка роботи",
-  },
-  {
-    number: "05",
     icon: HeadphonesIcon,
-    title: "Супровід",
-    description: "Моніторинг, підтримка та сервіс після запуску",
+    title: "Сервіс",
+    description:
+      "Після запуску система залишається під сервісним наглядом STEVARA.",
   },
 ];
 
@@ -67,9 +60,6 @@ function FadeIn({
 
 export function InstallationProcessSection() {
   const [isMobile, setIsMobile] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-  const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -80,20 +70,8 @@ export function InstallationProcessSection() {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  // Auto-advance steps when in view
-  useEffect(() => {
-    if (!isInView) return;
-
-    const interval = setInterval(() => {
-      setActiveStep((prev) => (prev + 1) % steps.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [isInView]);
-
   return (
     <section
-      ref={sectionRef}
       className="section-padding"
       style={{
         position: "relative",
@@ -109,153 +87,90 @@ export function InstallationProcessSection() {
         }}
       >
         {/* Header */}
-        <div
-          style={{
-            textAlign: "center",
-            maxWidth: "800px",
-            margin: "0 auto",
-            marginBottom: "clamp(60px, 10vw, 100px)",
-          }}
-        >
+        <div style={{ marginBottom: "clamp(48px, 8vw, 72px)" }}>
           <FadeIn>
-            <span
-              style={{
-                display: "inline-block",
-                fontSize: "12px",
-                fontWeight: 600,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: "rgba(255,255,255,0.5)",
-                marginBottom: "20px",
-              }}
-            >
+            <span style={{
+              display: "inline-block",
+              fontSize: "12px",
+              fontWeight: 600,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.5)",
+              marginBottom: "16px",
+            }}>
               Як працюємо
             </span>
           </FadeIn>
 
           <FadeIn delay={0.1}>
-            <h2 style={{ color: "#ffffff", marginBottom: "24px" }}>
-              Від консультації до стабільної роботи
+            <h2 style={{ margin: 0, maxWidth: "600px", color: "#ffffff" }}>
+              Від аналізу до стабільної роботи
             </h2>
-          </FadeIn>
-
-          <FadeIn delay={0.2}>
-            <p
-              style={{
-                margin: 0,
-                fontSize: "clamp(1rem, 1.6vw, 1.125rem)",
-                lineHeight: 1.7,
-                color: "rgba(255,255,255,0.6)",
-                maxWidth: "600px",
-                marginLeft: "auto",
-                marginRight: "auto",
-              }}
-            >
-              Прозорий процес з чітким розумінням кожного етапу
-            </p>
           </FadeIn>
         </div>
 
-        {/* Steps - Timeline style */}
+        {/* Steps - 4 columns */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "repeat(5, 1fr)",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(4, 1fr)",
             gap: isMobile ? "0" : "1px",
             backgroundColor: isMobile ? "transparent" : "rgba(255,255,255,0.1)",
           }}
         >
           {steps.map((step, index) => {
             const Icon = step.icon;
-            const isActive = index === activeStep;
 
             return (
-              <FadeIn key={step.number} delay={0.2 + index * 0.05}>
+              <FadeIn key={step.title} delay={0.15 + index * 0.08}>
                 <div
-                  onClick={() => setActiveStep(index)}
                   style={{
                     backgroundColor: "#000000",
-                    padding: isMobile ? "24px 0" : "clamp(24px, 3vw, 32px)",
+                    padding: isMobile
+                      ? "24px 0"
+                      : "clamp(28px, 3vw, 36px)",
                     height: "100%",
                     display: "flex",
                     flexDirection: "column",
                     gap: "16px",
-                    cursor: "pointer",
-                    borderBottom: isMobile
-                      ? "1px solid rgba(255,255,255,0.1)"
-                      : "none",
-                    transition: "background-color 0.3s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      "rgba(255,255,255,0.03)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#000000";
+                    borderTop: isMobile ? "1px solid rgba(255,255,255,0.1)" : "none",
                   }}
                 >
-                  {/* Progress indicator */}
+                  {/* Step number + icon */}
                   <div
                     style={{
-                      height: "2px",
-                      backgroundColor: "rgba(255,255,255,0.1)",
-                      borderRadius: "1px",
-                      overflow: "hidden",
-                      marginBottom: "8px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      marginBottom: "4px",
                     }}
                   >
-                    <motion.div
-                      initial={{ width: "0%" }}
-                      animate={{
-                        width: isActive ? "100%" : index < activeStep ? "100%" : "0%",
-                      }}
-                      transition={{
-                        duration: isActive ? 3 : 0.3,
-                        ease: isActive ? "linear" : "easeOut",
-                      }}
+                    <span
                       style={{
-                        height: "100%",
-                        backgroundColor: "#ffffff",
+                        fontSize: "12px",
+                        fontWeight: 600,
+                        letterSpacing: "0.08em",
+                        color: "rgba(255,255,255,0.5)",
+                      }}
+                    >
+                      0{index + 1}
+                    </span>
+                    <Icon
+                      style={{
+                        width: "18px",
+                        height: "18px",
+                        color: "rgba(255,255,255,0.5)",
+                        opacity: 0.6,
                       }}
                     />
                   </div>
-
-                  {/* Icon */}
-                  <div
-                    style={{
-                      color: isActive
-                        ? "#ffffff"
-                        : "rgba(255,255,255,0.4)",
-                      transition: "color 0.3s ease",
-                    }}
-                  >
-                    <Icon style={{ width: "24px", height: "24px" }} />
-                  </div>
-
-                  {/* Number */}
-                  <span
-                    style={{
-                      fontFamily:
-                        "var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif",
-                      fontSize: "11px",
-                      fontWeight: 600,
-                      letterSpacing: "0.1em",
-                      color: isActive
-                        ? "rgba(255,255,255,0.7)"
-                        : "rgba(255,255,255,0.3)",
-                      transition: "color 0.3s ease",
-                    }}
-                  >
-                    {step.number}
-                  </span>
 
                   {/* Title */}
                   <h4
                     style={{
                       margin: 0,
-                      color: isActive ? "#ffffff" : "rgba(255,255,255,0.6)",
-                      fontSize: isMobile ? "1.125rem" : "clamp(1rem, 1.3vw, 1.125rem)",
-                      transition: "color 0.3s ease",
+                      fontSize: "clamp(1rem, 1.3vw, 1.0625rem)",
+                      color: "#ffffff",
                     }}
                   >
                     {step.title}
@@ -265,12 +180,9 @@ export function InstallationProcessSection() {
                   <p
                     style={{
                       margin: 0,
-                      fontSize: "clamp(0.85rem, 1.1vw, 0.9rem)",
-                      lineHeight: 1.5,
-                      color: isActive
-                        ? "rgba(255,255,255,0.6)"
-                        : "rgba(255,255,255,0.4)",
-                      transition: "color 0.3s ease",
+                      fontSize: "clamp(0.8125rem, 1.1vw, 0.875rem)",
+                      lineHeight: 1.6,
+                      color: "rgba(255,255,255,0.5)",
                     }}
                   >
                     {step.description}
