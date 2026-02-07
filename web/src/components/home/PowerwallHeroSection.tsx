@@ -54,6 +54,82 @@ export function PowerwallHeroSection() {
         }}
       />
 
+      {/* Animated Certified Badge - Mobile only, top right */}
+      {isMobile && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.8, duration: 0.6 }}
+          style={{
+            position: "absolute",
+            top: "90px",
+            right: "20px",
+            zIndex: 20,
+            width: "70px",
+            height: "70px",
+          }}
+        >
+          <motion.svg
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            viewBox="0 0 100 100"
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <defs>
+              <path
+                id="circlePathPwMobile"
+                d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
+              />
+            </defs>
+            <text
+              fill="rgba(255,255,255,0.7)"
+              fontSize="9"
+              fontWeight="500"
+              letterSpacing="0.12em"
+            >
+              <textPath href="#circlePathPwMobile">
+                TESLA POWERWALL 3 • ОФІЦІЙНИЙ ПАРТНЕР •{" "}
+              </textPath>
+            </text>
+          </motion.svg>
+
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "32px",
+              height: "32px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(255,255,255,0.1)",
+              border: "1px solid rgba(255,255,255,0.2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="rgba(255,255,255,0.9)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" />
+            </svg>
+          </div>
+        </motion.div>
+      )}
+
       {/* Main Content */}
       <div
         style={{
@@ -274,92 +350,93 @@ export function PowerwallHeroSection() {
               </motion.div>
             </div>
 
-            {/* Right column - Certified Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              style={{
-                display: "flex",
-                alignItems: isMobile ? "start" : "flex-end",
-                gap: "48px",
-                width: isMobile ? "100%" : "auto",
-              }}
-            >
-              {/* Animated Certified Badge */}
-              <div
+            {/* Right column - Certified Badge (desktop only, in-flow) */}
+            {!isMobile && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
                 style={{
-                  position: "relative",
-                  width: isMobile ? "70px" : "100px",
-                  height: isMobile ? "70px" : "100px",
+                  display: "flex",
+                  alignItems: "flex-end",
+                  gap: "48px",
+                  width: "auto",
                 }}
               >
-                {/* Rotating text circle */}
-                <motion.svg
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    duration: 20,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                  viewBox="0 0 100 100"
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                  }}
-                >
-                  <defs>
-                    <path
-                      id="circlePathPw"
-                      d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
-                    />
-                  </defs>
-                  <text
-                    fill="rgba(255,255,255,0.7)"
-                    fontSize="9"
-                    fontWeight="500"
-                    letterSpacing="0.12em"
-                  >
-                    <textPath href="#circlePathPw">
-                      TESLA POWERWALL 3 • ОФІЦІЙНИЙ ПАРТНЕР •{" "}
-                    </textPath>
-                  </text>
-                </motion.svg>
-
-                {/* Center icon */}
                 <div
                   style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: isMobile ? "32px" : "44px",
-                    height: isMobile ? "32px" : "44px",
-                    borderRadius: "50%",
-                    backgroundColor: "rgba(255,255,255,0.1)",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    position: "relative",
+                    width: "100px",
+                    height: "100px",
                   }}
                 >
-                  <svg
-                    width={isMobile ? "16" : "22"}
-                    height={isMobile ? "16" : "22"}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="rgba(255,255,255,0.9)"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                  {/* Rotating text circle */}
+                  <motion.svg
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 20,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    viewBox="0 0 100 100"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                    }}
                   >
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" />
-                  </svg>
+                    <defs>
+                      <path
+                        id="circlePathPw"
+                        d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
+                      />
+                    </defs>
+                    <text
+                      fill="rgba(255,255,255,0.7)"
+                      fontSize="9"
+                      fontWeight="500"
+                      letterSpacing="0.12em"
+                    >
+                      <textPath href="#circlePathPw">
+                        TESLA POWERWALL 3 • ОФІЦІЙНИЙ ПАРТНЕР •{" "}
+                      </textPath>
+                    </text>
+                  </motion.svg>
+
+                  {/* Center icon */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      width: "44px",
+                      height: "44px",
+                      borderRadius: "50%",
+                      backgroundColor: "rgba(255,255,255,0.1)",
+                      border: "1px solid rgba(255,255,255,0.2)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.9)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" />
+                    </svg>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            )}
           </div>
         </div>
       </div>

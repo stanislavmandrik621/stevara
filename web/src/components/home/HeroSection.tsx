@@ -72,7 +72,7 @@ export function HeroSection() {
         zIndex: 1,
       }} />
 
-      {/* Animated Certified Badge - Mobile only, top left */}
+      {/* Animated Certified Badge - Mobile only, top right */}
       {isMobile && (
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -80,8 +80,8 @@ export function HeroSection() {
           transition={{ delay: 0.8, duration: 0.6 }}
           style={{
             position: 'absolute',
-            top: '80px',
-            left: '20px',
+            top: '90px',
+            right: '20px',
             zIndex: 20,
             width: '70px',
             height: '70px',
