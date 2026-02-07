@@ -15,3 +15,4 @@ export { SupportSection } from './SupportSection';
 export { FinancingTeaserSection } from './FinancingTeaserSection';
 export { FAQSection } from './FAQSection';
 export { CTASection } from './CTASection';
+export { PowerwallHeroSection } from './PowerwallHeroSection';

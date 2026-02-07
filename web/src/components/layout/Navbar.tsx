@@ -166,12 +166,10 @@ export function Navbar() {
               }}>
                 {navLinks.map((link) => {
                   const isActive = pathname === link.href;
-                  const isDisabled = link.href !== "/";
                   return (
                     <Link
                       key={link.href}
                       href={link.href}
-                      onClick={(e) => isDisabled && e.preventDefault()}
                       style={{
                         fontSize: '13px',
                         fontWeight: 500,
@@ -181,7 +179,7 @@ export function Navbar() {
                           ? (isActive ? 'var(--foreground)' : 'var(--foreground-muted)')
                           : (isActive ? '#ffffff' : 'rgba(255,255,255,0.7)'),
                         transition: 'color 0.2s ease',
-                        cursor: isDisabled ? 'default' : 'pointer',
+                        cursor: 'pointer',
                       }}
                     >
                       {link.label}
@@ -205,6 +203,14 @@ export function Navbar() {
                     alignItems: 'center', 
                     cursor: 'pointer',
                     marginLeft: '12px',
+                  }}
+                  onClick={() => {
+                    const lenis = (window as unknown as { lenis?: { scrollTo: (target: string | HTMLElement, options?: { duration?: number; offset?: number }) => void } }).lenis;
+                    if (lenis) {
+                      lenis.scrollTo('#cta', { duration: 4, offset: -80 });
+                    } else {
+                      document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
+                    }
                   }}
                   onMouseEnter={(e) => {
                     const btn = e.currentTarget.querySelector('.nav-cta-btn') as HTMLElement;
@@ -381,9 +387,7 @@ export function Navbar() {
               justifyContent: 'center', 
               padding: '0 24px',
             }}>
-              {navLinks.map((link, index) => {
-                const isDisabled = link.href !== "/";
-                return (
+              {navLinks.map((link, index) => (
                   <motion.div
                     key={link.href}
                     initial={{ opacity: 0, x: -20 }}
@@ -392,13 +396,7 @@ export function Navbar() {
                   >
                     <Link
                       href={link.href}
-                      onClick={(e) => {
-                        if (isDisabled) {
-                          e.preventDefault();
-                        } else {
-                          setIsMobileMenuOpen(false);
-                        }
-                      }}
+                      onClick={() => setIsMobileMenuOpen(false)}
                       style={{
                         display: 'block',
                         padding: '16px 0',
@@ -408,15 +406,14 @@ export function Navbar() {
                         textDecoration: 'none',
                         color: pathname === link.href ? 'var(--foreground)' : 'var(--foreground-muted)',
                         transition: 'color 0.3s ease',
-                        cursor: 'default',
+                        cursor: 'pointer',
                         borderBottom: '1px solid rgba(0,0,0,0.06)',
                       }}
                     >
                       {link.label}
                     </Link>
                   </motion.div>
-                );
-              })}
+                ))}
             </nav>
 
             {/* Bottom section with button and contacts */}
@@ -429,7 +426,18 @@ export function Navbar() {
                 borderTop: '1px solid rgba(0,0,0,0.06)',
               }}
             >
-              <span
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setTimeout(() => {
+                    const lenis = (window as unknown as { lenis?: { scrollTo: (target: string | HTMLElement, options?: { duration?: number; offset?: number }) => void } }).lenis;
+                    if (lenis) {
+                      lenis.scrollTo('#cta', { duration: 4, offset: -80 });
+                    } else {
+                      document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }, 350);
+                }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -444,12 +452,13 @@ export function Navbar() {
                   letterSpacing: '0.02em',
                   textDecoration: 'none',
                   borderRadius: '14px',
-                  cursor: 'default',
+                  border: 'none',
+                  cursor: 'pointer',
                 }}
               >
                 Залишити запит
                 <ArrowRight style={{ width: '16px', height: '16px' }} />
-              </span>
+              </button>
               
               {/* Contacts */}
               <div style={{

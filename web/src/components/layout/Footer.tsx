@@ -7,8 +7,8 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 
 const footerLinks = [
+  { label: "Головна", href: "/" },
   { label: "Powerwall", href: "/powerwall" },
-  { label: "Megapack", href: "/megapack" },
   { label: "Про нас", href: "/about" },
   { label: "Контакти", href: "/contacts" },
 ];
@@ -43,24 +43,28 @@ export function Footer() {
         borderTop: '1px solid var(--divider)',
       }}
     >
-      {/* Large background text - full width to container edges */}
+      {/* Large decorative logo watermark - aligned to inner container */}
       <div style={{
         position: 'absolute',
         bottom: isMobile ? '20px' : '30px',
-        left: isMobile ? '24px' : '48px',
-        right: isMobile ? '24px' : '48px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        fontSize: isMobile ? '11vw' : 'clamp(100px, 10vw, 140px)',
-        fontWeight: 800,
-        letterSpacing: isMobile ? '0' : '0.2em',
-        color: 'rgba(0,0,0,0.03)',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '100%',
+        maxWidth: isMobile ? 'calc(100% - 48px)' : 'calc(1280px - 96px)',
+        opacity: isDark ? 0.04 : 0.04,
         pointerEvents: 'none',
         userSelect: 'none',
       }}>
-        {'STEVARA'.split('').map((letter, i) => (
-          <span key={i} style={{ flex: 1, textAlign: 'center' }}>{letter}</span>
-        ))}
+        <Image
+          src={isDark ? "/images/logo-white.svg" : "/images/logo-black.svg"}
+          alt=""
+          width={1200}
+          height={170}
+          style={{
+            width: '100%',
+            height: 'auto',
+          }}
+        />
       </div>
 
       <div style={{
@@ -282,10 +286,10 @@ export function Footer() {
             <Image
               src={isDark ? "/images/logo-white.svg" : "/images/logo-black.svg"}
               alt="STEVARA"
-              width={100}
-              height={14}
+              width={120}
+              height={17}
               style={{
-                height: '14px',
+                height: '17px',
                 width: 'auto',
               }}
             />

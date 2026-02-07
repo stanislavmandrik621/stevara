@@ -102,6 +102,7 @@ export function CTASection() {
 
   return (
     <section 
+      id="cta"
       className="section-padding"
       style={{ 
         position: 'relative',

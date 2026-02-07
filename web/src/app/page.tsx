@@ -1,10 +1,5 @@
 import {
   HeroSection,
-  OfficialHighlightsSection,
-  BlackoutDemoSection,
-  TechSpecsSection,
-  TeslaAppPreviewSection,
-  EnergyBenefitsSection,
   DirectionsSection,
   ValueSection,
   InstallationProcessSection,
@@ -18,46 +13,31 @@ import {
 export default function HomePage() {
   return (
     <main className="relative">
-      {/* Section 1: Hero - First impression */}
+      {/* Hero - First impression */}
       <HeroSection />
       
-      {/* Section 2: Powerwall features */}
-      <OfficialHighlightsSection />
-      
-      {/* Section 3: Blackout demo - Main selling point */}
-      <BlackoutDemoSection />
-      
-      {/* Section 4: Tech specs teaser */}
-      <TechSpecsSection />
-      
-      {/* Section 4: Tesla App preview */}
-      <TeslaAppPreviewSection />
-      
-      {/* Section 5: Energy benefits */}
-      <EnergyBenefitsSection />
-      
-      {/* Section 7: Directions - Powerwall / Megapack */}
-      <DirectionsSection />
-      
-      {/* Section 8: Value proposition - One team, full responsibility */}
+      {/* Чому STEVARA - company trust points */}
       <ValueSection />
       
-      {/* Section 9: Installation process - 5 steps */}
+      {/* Powerwall product showcase with link to /powerwall */}
+      <DirectionsSection />
+      
+      {/* Як працюємо */}
       <InstallationProcessSection />
       
-      {/* Section 12: Cases - Installation examples */}
+      {/* Installation examples */}
       <CasesSection />
       
-      {/* Section 13: Support - Post-launch support */}
+      {/* Post-launch support */}
       <SupportSection />
       
-      {/* Section 14: Financing teaser - Available financing */}
+      {/* Financing teaser */}
       <FinancingTeaserSection />
       
-      {/* Section 15: FAQ - Questions & answers */}
+      {/* FAQ */}
       <FAQSection />
       
-      {/* Section 16: CTA - Contact form */}
+      {/* Contact CTA */}
       <CTASection />
     </main>
   );

@@ -174,8 +174,7 @@ export function HeroSection() {
           }}>
             {/* Left column - Text content */}
             <div style={{ maxWidth: isMobile ? '100%' : '600px' }}>
-              {/* Main Title - DM Serif Display */}
-              {/* Subtitle - Tesla Powerwall */}
+              {/* Label */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -190,7 +189,7 @@ export function HeroSection() {
                   marginBottom: '16px',
                 }}
               >
-                Tesla Powerwall
+                Офіційний партнер Tesla Energy
               </motion.p>
 
               {/* Main Title */}
@@ -208,7 +207,7 @@ export function HeroSection() {
                   marginBottom: '20px',
                 }}
               >
-                Передбачувана енергія
+                Передбачувана енергія для вашого дому
               </motion.h1>
 
               {/* Description */}
@@ -223,28 +222,10 @@ export function HeroSection() {
                   lineHeight: 1.7,
                   color: 'rgba(255,255,255,0.75)',
                   maxWidth: '480px',
-                  marginBottom: '12px',
-                }}
-              >
-                Інтегрована система збереження енергії з автоматичним резервом і безперервною роботою
-              </motion.p>
-
-              {/* STEVARA line */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.45 }}
-                style={{
-                  fontFamily: 'var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
-                  fontSize: isMobile ? '13px' : '14px',
-                  fontWeight: 400,
-                  lineHeight: 1.6,
-                  color: 'rgba(255,255,255,0.55)',
-                  maxWidth: '480px',
                   marginBottom: '32px',
                 }}
               >
-                <span style={{ fontWeight: 600, color: 'rgba(255,255,255,0.8)' }}>STEVARA</span> — офіційне постачання, інженерне впровадження та супровід Powerwall в Україні.
+                Офіційне постачання, інженерне впровадження та сервісний супровід Tesla Powerwall в Україні.
               </motion.p>
 
               {/* CTA Button Group - both react on hover */}

@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
@@ -13,6 +14,7 @@ const products = [
       "Стабільна робота незалежно від стану мережі та резерв під час відключень.",
     buttonText: "Дізнатись більше",
     image: "/images/powerwall-private-home.jpg",
+    href: "/powerwall",
   },
 ];
 
@@ -138,6 +140,7 @@ function ProductBlock({
   description,
   buttonText,
   image,
+  href,
   index,
   isMobile,
 }: {
@@ -146,6 +149,7 @@ function ProductBlock({
   description: string;
   buttonText: string;
   image: string;
+  href?: string;
   index: number;
   isMobile: boolean;
 }) {
@@ -267,7 +271,13 @@ function ProductBlock({
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <HeroStyleButton text={buttonText} isDark />
+            {href ? (
+              <Link href={href} style={{ textDecoration: "none" }}>
+                <HeroStyleButton text={buttonText} isDark />
+              </Link>
+            ) : (
+              <HeroStyleButton text={buttonText} isDark />
+            )}
           </motion.div>
         </div>
       </div>
