@@ -165,14 +165,14 @@ export function Navbar() {
                 gap: '32px',
               }}>
                 {navLinks.map((link) => {
-                  const isActive = pathname === link.href;
+                  const isActive = pathname === link.href || pathname === link.href + '/';
                   return (
                     <Link
                       key={link.href}
                       href={link.href}
                       style={{
                         fontSize: '13px',
-                        fontWeight: 500,
+                        fontWeight: isActive ? 600 : 500,
                         letterSpacing: '0.02em',
                         textDecoration: 'none',
                         color: isScrolled
@@ -404,7 +404,7 @@ export function Navbar() {
                         fontWeight: 600,
                         letterSpacing: '-0.02em',
                         textDecoration: 'none',
-                        color: pathname === link.href ? 'var(--foreground)' : 'var(--foreground-muted)',
+                        color: (pathname === link.href || pathname === link.href + '/') ? 'var(--foreground)' : 'var(--foreground-muted)',
                         transition: 'color 0.3s ease',
                         cursor: 'pointer',
                         borderBottom: '1px solid rgba(0,0,0,0.06)',

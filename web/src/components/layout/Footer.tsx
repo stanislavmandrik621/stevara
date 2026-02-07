@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 
 const footerLinks = [
@@ -14,6 +16,7 @@ const footerLinks = [
 ];
 
 export function Footer() {
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
   const [isMobile, setIsMobile] = useState(false);
   const { resolvedTheme } = useTheme();
@@ -221,42 +224,50 @@ export function Footer() {
               display: 'flex',
               flexDirection: 'column',
             }}>
-              {footerLinks.map((link, index) => (
-                <motion.a
-                  key={link.href}
-                  href={link.href}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.1 + index * 0.05 }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '20px 0',
-                    borderBottom: '1px solid var(--divider)',
-                    color: 'var(--foreground)',
-                    fontSize: '16px',
-                    fontWeight: 500,
-                    textDecoration: 'none',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.paddingLeft = '12px';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.paddingLeft = '0';
-                  }}
-                >
-                  {link.label}
-                  <ArrowRight style={{ 
-                    width: '16px', 
-                    height: '16px',
-                    opacity: 0.4,
-                    transform: 'rotate(-45deg)',
-                  }} />
-                </motion.a>
-              ))}
+              {footerLinks.map((link, index) => {
+                const isActive = pathname === link.href || pathname === link.href + '/';
+                return (
+                  <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.1 + index * 0.05 }}
+                  >
+                    <Link
+                      href={link.href}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '20px 0',
+                        borderBottom: '1px solid var(--divider)',
+                        color: isActive ? 'var(--foreground)' : 'var(--foreground-muted)',
+                        fontSize: '16px',
+                        fontWeight: isActive ? 600 : 500,
+                        textDecoration: 'none',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.paddingLeft = '12px';
+                        e.currentTarget.style.color = 'var(--foreground)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.paddingLeft = '0';
+                        e.currentTarget.style.color = isActive ? 'var(--foreground)' : 'var(--foreground-muted)';
+                      }}
+                    >
+                      {link.label}
+                      <ArrowRight style={{ 
+                        width: '16px', 
+                        height: '16px',
+                        opacity: isActive ? 0.7 : 0.4,
+                        transform: 'rotate(-45deg)',
+                      }} />
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </nav>
           </div>
         </div>
