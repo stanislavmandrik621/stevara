@@ -189,7 +189,7 @@ export function HeroSection() {
                   marginBottom: '16px',
                 }}
               >
-                Офіційний партнер Tesla Energy
+                Tesla Energy
               </motion.p>
 
               {/* Main Title */}
